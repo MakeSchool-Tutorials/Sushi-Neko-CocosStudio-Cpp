@@ -24,7 +24,7 @@ Testing your setup
 
 Let’s make sure everything was generated correctly. Click the publish button (on left side of the toolbar) in SpriteBuilder:
 
-![image](./Spritebuilder_Publish.png)
+![image](./SpriteBuilder_Publish.png)
 
 Now open SushiNeko.xcodeproj to view the project in Xcode. Run this on the iPhone simulator and verify it shows the “SpriteBuilder” message:
 
