@@ -1,8 +1,8 @@
 ---
-title: "Move on with this tutorial!"
-slug: tutorial-page-2
+title: "Adding a title screen"
+slug: title-screen
 ---     
 
 #Just regular Markdown
 
-Content...
+Part 2 to be finished soon!

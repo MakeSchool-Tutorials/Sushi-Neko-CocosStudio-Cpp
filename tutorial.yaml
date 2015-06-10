@@ -1,5 +1,4 @@
-title: "Tutorial Template Title"
+title: "Build a clone of Timberman"
 cover: cover.png
 teaser_text: |
-    Tell the user what they will learn!
-    This can be multi-line text.
+    In this tutorial we will build Sushi Neko -- a clone of the popular mobile game [Timberman](https://itunes.apple.com/us/app/timberman/id871809581?mt=8). We will use Apple's new Swift programming language together with SpriteBuilder and Cocos2D

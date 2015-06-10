@@ -1,8 +1,8 @@
 ---
-title: "Move on with this tutorial!"
-slug: tutorial-page-2
+title: "Getting fancy with more animations"
+slug: game-object-animations
 ---     
 
 #Just regular Markdown
 
-Content...
+Part 2 to be finished soon!

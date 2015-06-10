@@ -9,11 +9,12 @@ In this tutorial we will build Sushi Neko -- a clone of the popular mobile game 
 
 If you aren't familiar with SpriteBuilder you should consider reading our [SpriteBuilder beginner tutorial](https://www.makeschool.com/tutorials/getting-started-with-spritebuilder/) first since this tutorial assumes that you are familiar with basic SpriteBuilder tasks.
 
-Throughout this tutorial you will learn many concepts including:
+Throughout this tutorial you will learn many concepts including how to:
 
-- How to
-- How to
-- How to
+- effectively use SpriteBuilder to prototype a game
+- use property observers in Swift
+- create complex animations
+- add visual effects
 
 We'll start off by making a "discrete" version of Timberman. The core gameplay will be present but there will be no fancy animations.
 
