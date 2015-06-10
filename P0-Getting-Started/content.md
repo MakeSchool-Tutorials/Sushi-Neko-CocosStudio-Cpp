@@ -18,7 +18,7 @@ Throughout this tutorial you will learn many concepts including how to:
 
 We'll start off by making a "discrete" version of Timberman. The core gameplay will be present but there will be no fancy animations.
 
-<!--TODO: ADD GIF-->
+![](./Simulator_MVP.gif)
 
 After we finish this basic but playable version we will spend some time polishing up the game. We'll add in a title screen, game over popup and animations.
 
