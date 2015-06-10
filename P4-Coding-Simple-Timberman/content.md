@@ -104,7 +104,7 @@ Give it a shot then run the project to see if your solution worked.
 
 Your game should now look like this when you run it:
 
-![](./Simulator_Pieces_Generated.png)
+![](./Simulator_Pieces_Generation.png)
 
 Once you have it working, move onto adding touch controls.
 
@@ -301,7 +301,7 @@ We'll add more to the `stepTower` method later on but go ahead and give this ver
 
 Launch the game and play around a bit. You should have an infinitely looping tower of sushi with randomized obstacles!
 
-![](./Simulator_Randon_Obstacles.gif)
+![](./Simulator_Random_Obstacles.gif)
 
 **Detect Collisions and Trigger Game Over**
 
