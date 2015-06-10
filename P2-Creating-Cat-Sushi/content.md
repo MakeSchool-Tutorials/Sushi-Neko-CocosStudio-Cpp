@@ -1,15 +1,15 @@
 ---
 title: "Creating our character and obstacles"
 slug: creating-cat-sushi
----     
+---
 
 **Adding Artwork**
 
 <!--TODO: ADD ART PARK LINK-->
 To get started, [download our art pack](). Add the art pack you just downloaded to your SpriteBuilder project by first unpacking the archive, then drag the folder onto the File View in SpriteBuilder (lower left area where you can see files & folders):
 
-<!--TODO: UPDATE SCREENSHOT-->
-![](https://static.makegameswith.us/gamernews_images/NNskrAxoef/Screen Shot 2014-02-10 at 15.153.png)
+<!--MAKE THIS A GIF?-->
+![](./SpriteBuilder_Assets.png)
 
 **Create the Character**
 
@@ -17,7 +17,7 @@ Now that we have art, create a new *CCB-File* named `Character.ccb` of type `Spr
 
 Set its *sprite frame property* to `SushiNekoAssets/character1.png`:
 
-![]()
+![](./SpriteBuilder_Character_SF.png)
 
 We won't be adding any animations until after we finish the core gameplay.
 
@@ -37,33 +37,33 @@ Drag in `roll.png` from the your resources as a child of the root. Also drag in 
 
 Your timeline should look like this:
 
-![]()
+![](./SpriteBuilder_Piece_Messy.png)
 
 It's time to position our sprites correctly! Set the roll's *anchor point* to `(0, 0)`. This should position it correctly within the root node's bounding box.
 
-![]()
+![](./SpriteBuilder_Piece_Roll.png)
 
 Set its *custom class* to `Piece`.
 
-![]()
+![](./SpriteBuilder_Piece_CC.png)
 
 Now it's time to move onto the left chopstick. Set its *position* to `(0, 50)` and its *anchor point* to `(1, 0.5)`.
 
-![]()
+![](./SpriteBuilder_Piece_Left.png)
 
-Also create a `doc root var` code connection to `left` so that we can access it in code later. 
+Also create a `doc root var` code connection to `left` so that we can access it in code later.
 
-![]()
+![](./SpriteBuilder_Piece_Left_CC.png)
 
 Finally let's setup the right chopstick. Set its *reference corner* to the `bottom-right` and set its *position* to `(0, 50)`. Also set its *anchor point* to `(0, 0.5)` and check *Flip X*.
 
-![]()
+![](./SpriteBuilder_Piece_Right.png)
 
 This allows us to use the same asset for both chopsticks and save a little bit of memory. Now create a `doc root var` code connection to `right`.
 
 The obstacle should now look like this:
 
-![]()
+![](./SpriteBuilder_Piece_Finish.png)
 
 The last thing we need to do is uncheck the *Visible* box of both chopsticks. We'll programmatically turn branches on/off while generating the level.
 
