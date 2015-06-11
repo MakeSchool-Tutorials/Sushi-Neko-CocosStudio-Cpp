@@ -5,6 +5,8 @@ slug: new-project
 
 If you haven't used Cocos Studio before, you will need to install it.  For more information, on how to do that look at the tutorial [here](https://www.makeschool.com/tutorials/learn-cocos-studio-and-c-by-building-the-game-of-life/get-started-with-cocos-studio).
 
+In fact, if you haven't used Cocos Studio and Cocos2d-x before, you might find it easier to start with the [Game of Life tutorial](https://www.makeschool.com/tutorials/learn-cocos-studio-and-c-by-building-the-game-of-life/what-game-of-life) instead.
+
 Create a New Project
 ====================
 
