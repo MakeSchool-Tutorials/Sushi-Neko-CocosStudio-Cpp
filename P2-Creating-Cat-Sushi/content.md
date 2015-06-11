@@ -3,6 +3,8 @@ title: "Creating our character and obstacles"
 slug: creating-cat-sushi
 ---
 
+If you haven't used Cocos Studio before, you should first read up on the interface [here](https://www.makeschool.com/tutorials/learn-cocos-studio-and-c-by-building-the-game-of-life/cocos-studio-user-interface).
+
 **Adding Artwork**
 
 <!--TODO: ADD ART PARK LINK-->
