@@ -5,68 +5,68 @@ slug: creating-cat-sushi
 
 If you haven't used Cocos Studio before, you should first read up on the interface [here](https://www.makeschool.com/tutorials/learn-cocos-studio-and-c-by-building-the-game-of-life/cocos-studio-user-interface).
 
-**Adding Artwork**
+Adding Artwork
+==============
 
-<!--TODO: ADD ART PARK LINK-->
-To get started, [download our art pack](). Add the art pack you just downloaded to your SpriteBuilder project by first unpacking the archive, then drag the folder onto the File View in SpriteBuilder (lower left area where you can see files & folders):
+To get started, [download our art pack](Assets.zip). Add the art pack you just downloaded to your Cocos Studio project by first unpacking the archive, then drag the folder onto the Resources Panel in Cocos Studio. Alternatively you can right click in the Resources Browser and *Import Resources...*.
 
-<!--MAKE THIS A GIF?-->
-![](./SpriteBuilder_Assets.png)
+![image](resourcesAfterImport.png)
 
-**Create the Character**
+Now open *MainScene.csd* and highlight Default in the timeline.
+Hit the delete key - you should end up with a black screen. You just deleted the default background image, but note that you cannot delete the root Scene. 
 
-Now that we have art, create a new *CCB-File* named `Character.ccb` of type `Sprite`.
+In the Resources Browser in the left panel, find *HelloWorld.png* and delete it - you don't need it anymore.
 
-Set its *sprite frame property* to `SushiNekoAssets/character1.png`:
+Check to make sure that your design resolution (in the top-left hand corner) is set to *960 x 640*. This is the resolution at which we'll design the game in Cocos Studio.
 
-![](./SpriteBuilder_Character_SF.png)
+![image](displayResolution.png)
 
-We won't be adding any animations until after we finish the core gameplay.
+Create the Character
+====================
 
-Now set the *anchor point* to `(1, 0)` so that it is positioned relative to its bottom-right corner. We'll see how this makes things easier when we setup the *MainScene*.
+Now that we have art, create a new *CSD-File* named *Character* of type Node. To do that, either navigate to *File->New File* or just use the keyboard shortcut *⌘N*.
 
-We also want to set its *custom class property* to `Character` so that it looks for `Character.swift` when we create it later.
+![image](createCharacter.png)
 
-Now it's time to create the obstacles.
+Now we need to add a *Sprite* to the node to display the image of our cat. We're designing in iPhone 4 / 4s resolution, which is 960 x 640. That resolution uses *2x* assets, so every image we use will be from the *resources-2x* directory. Then later we'll instruct Cocos2d-x to load the correct asset-size based on the actual resolution of the device that the game is running on.
 
-**Create an Obstacle Piece**
+Navigate in the resources browser to *Assets/Images/resources-2x/* and drag *character1.png* into the scene. The result should look something like this:
 
-Create a *CCB-File* named `Piece.ccb` of type `CCNode`. We want to create a CCNode so that we can have more control over its animations later on in the tutorial.
+![image](afterDragCharacter.png)
 
-Set the root nodes *content size* to `(105, 60)` and its *anchor point* to `(0.5, 0)`. These properties will make it easy for us to build a stack of sushi from code.
+Change the name of the dragged sprite to *Cat*.  It's a good idea in general to give custom names to all your objects in Cocos Studio, because later you can reference them in code by name.
 
-Drag in `roll.png` from the your resources as a child of the root. Also drag in two `chopstick.png` from the resources as a child of *roll*. Name one `right` and the other `left`
+Set the *position* to (0, 0). Now set the *anchor point* to (1, 0) so that it is positioned relative to its bottom-right corner. We'll see how this makes things easier later, when we set up the *MainScene*.
+
+After we're done making the core gameplay, we'll come back to this file to create some animations for the cat.
+
+Now it's time to create the sushi pieces that will get chopped, and the associated obstacles for the player to dodge.
+
+Create an Obstacle Piece
+========================
+
+Create a *CSD-File* named *Piece* of type Node.
+
+Drag in *roll.png* from the your resources as a child of the root. Name it "roll". Also drag in two *chopstick.png* from the resources panel.  Make the chopsticks children of the roll by dragging the timeline text into the roll timeline text. Name one "rightChopstick" and the other "leftChopstick".
 
 Your timeline should look like this:
 
-![](./SpriteBuilder_Piece_Messy.png)
+![image](postChopstickTimeline.png)
 
-It's time to position our sprites correctly! Set the roll's *anchor point* to `(0, 0)`. This should position it correctly within the root node's bounding box.
+It's time to position our sprites correctly! Set the roll's *position* to (0, 0).
 
-![](./SpriteBuilder_Piece_Roll.png)
+Now lets move on to the left chopstick. Set its *anchor point* to (1.0, 0.5) and its *position* in relative percentage of parent container to (0, 40).
 
-Set its *custom class* to `Piece`.
+Let's set up the right chopstick. Set its *anchor point* to (0, 0.5). Set the *position* (also as a *percentage*) to (100, 40). Finally, click the *flip horizontal* button. This allows us to use the same asset for both chopsticks and save a little bit of memory.
 
-![](./SpriteBuilder_Piece_CC.png)
+The end result should look something like this:
 
-Now it's time to move onto the left chopstick. Set its *position* to `(0, 50)` and its *anchor point* to `(1, 0.5)`.
+![image](pieceSetup.png)
 
-![](./SpriteBuilder_Piece_Left.png)
+The last thing we need to do is uncheck the *Visible* box of both chopsticks. We're going to make them visible programatically, but for now we want them both to be invisble.
 
-Also create a `doc root var` code connection to `left` so that we can access it in code later.
+So now the piece should look like this:
 
-![](./SpriteBuilder_Piece_Left_CC.png)
-
-Finally let's setup the right chopstick. Set its *reference corner* to the `bottom-right` and set its *position* to `(0, 50)`. Also set its *anchor point* to `(0, 0.5)` and check *Flip X*.
-
-![](./SpriteBuilder_Piece_Right.png)
-
-This allows us to use the same asset for both chopsticks and save a little bit of memory. Now create a `doc root var` code connection to `right`.
-
-The obstacle should now look like this:
-
-![](./SpriteBuilder_Piece_Finish.png)
-
-The last thing we need to do is uncheck the *Visible* box of both chopsticks. We'll programmatically turn branches on/off while generating the level.
+![image](pieceInvisibleChopsticks.png)
 
 Let's move on to setting up the *MainScene* in the next step!
