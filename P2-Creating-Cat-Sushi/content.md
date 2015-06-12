@@ -47,7 +47,7 @@ Create an Obstacle Piece
 
 Create a *CSD-File* named *Piece* of type Node.
 
-Drag in *roll.png* from the your resources as a child of the root. Name it "roll". Also drag in two *chopstick.png* from the resources panel.  Make the chopsticks children of the roll by dragging the timeline text into the roll timeline text. Name one "rightChopstick" and the other "leftChopstick".
+Drag in *roll.png* from the *resources-2x* directory in the resources panel. Name it "roll". Also drag in two *chopstick.png* from the resources panel.  Make the chopsticks children of the roll by dragging the timeline text into the roll timeline text. Name one "rightChopstick" and the other "leftChopstick".
 
 Your timeline should look like this:
 
