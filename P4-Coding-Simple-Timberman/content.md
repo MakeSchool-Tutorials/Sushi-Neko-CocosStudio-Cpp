@@ -1,5 +1,5 @@
 ---
-title: "Move on with this tutorial!"
+title: "Time to Start Coding!"
 slug: coding-simple-timberman
 ---
 
