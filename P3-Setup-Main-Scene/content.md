@@ -3,76 +3,57 @@ title: "Setting up the main scene"
 slug: setup-main-scene
 ---
 
-**Setting Up MainScene.ccb**
+Open *MainScene.csd*. 
 
-Open up `MainScene.ccb`. You'll notice that it defaults to landscape mode. We'll change the project settings before we get started.
+Add a Background
+================
 
-Open the project settings and change the *orientation*:
+Now add the background image by dragging *background.png* onto the scene. Set its *anchor point* to (0.5, 0) and its *position* in *percentage* to (50, 0). This will ensure that the the background image is centered on the bottom edge of all devices.
 
-![](./SpriteBuilder_Orientation.png)
+![image](setUpBackground.png)
 
-Remove the "SpriteBuilder" label and gradient node from *MainScene* so we end up with a blank (black) stage.
+Add the Character and Sushi Stack
+=================================
 
-**Add the Background Image**
+Drag Character.csd onto the scene. Name it "character" and set its *x-position* to 50% and it's *y-position* to 230 px (*not percentage*).
 
-Now add the background image by dragging `background.png` onto the scene. Set its *position* to `(50%, 0)` and its *anchor point* to `(0.5, 0)`. This will ensure that the the background image is centered on the bottom edge of all devices.
+We are about to set up the necessary nodes for the sushi stack. First we'll add a static roll and position it. This roll will serve as our base (similar to the tree stump in Timberman). Then we'll add an empty *Node* and position it so we have a reference point to programmatically build up our sushi stack.  
 
-![](./SpriteBuilder_MainScene_Background.png)
+Drag Piece.csd onto the scene. Set the *x-position* to 50% and the *y-position* to 292px.
 
-**Add the Character**
-
-Drag `Character.ccb` onto the scene. Set its *position* to `(50%, 0)` and create a `doc root var` code connection to `character`.
-
-**Setup the Sushi Stack**
-
-We are about to setup the necessary nodes for the sushi stack. First we'll add a roll and position its bottom slightly off the screen. This roll will serve as our base (similar to the tree stump in Timberman). Then we'll add an empty *CCNode* and position it so we have a reference point to programmatically build up our sushi stack.  Create a `doc root var` code connection to `piecesNode` in the empty *CCNode* so we can use it programmatically later.
-
-Drag `Piece.ccb` onto the scene. Set its *position* to `(50%, -30)` and its *anchor point* to `(0.5, 0)`.
-
-Drag in a *Node* from the *node library* pane on the left side of SpriteBuilder onto the scene. Set its *position* to `(50%, 28)` and its *anchor point* to `(0.5, 0)`.
+Drag in a *Node* from the *Objects Panel* on the left side of Cocos Studio.  Name it "pieceNode". Set its *x-position* to 50% and its *y-position* to 406px.  
 
 Your scene and timeline should now look like this:
 
-![](./SpriteBuilder_MainScene_Layout.png)
+![image](afterPieceNode.png)
 
 To complete the MainScene we still need to add a score label, restart button, and timer bar.
 
-**Add a Score Label**
+Add Some UI
+===========
 
-Drag a *Label TTF* from the *node library* pane on the left side of SpriteBuilder onto the scene. Set its *position* to `(50%, 65%)`. Set the following properties:
+Drag a *Label* (not *BitmapLabel*) from the *Widgets* pane onto the scene. Name it *scoreLabel* Set its *position* to `(50%, 65%)`. Set the *font file* to "Game of Three.ttf". You can find it in *Assets/Fonts*. Set the *text* to 0 and the *font size* to 100. This label will show how many successful chops the player has made on the sushi tower.
 
-1. *Label text* to `0`
-2. *Font name* to `Courier`
-3. *Font size* to `48`
-4. *Outline color* to `Black`
-5. *Outline width* to `2`
+![image](afterScoreLabel.png)
 
-![](./SpriteBuilder_MainScene_Score.png)
+###Add a Restart Button
 
-We'll need to be able to change the label with each obstacle the player successfully passes so create a `doc root var` code connection to `scoreLabel`.
+Drag a *Button* from the *Widgets* pane on the left side of Cocos Studio onto the scene. Name it "play". Set its *size* to (203, 126). Set its *position* to (50%, 50%). and *title* to `Restart`. The *text* should say "Button" - remove that. For the *normal state* drag over *button.png*. For *press state* drag over *buttonPressed.png*. 
 
-**Add a Restart Button**
-
-It's easier to setup and position a button from SpriteBuilder than doing it from code. Whenever a game over is triggered, we'll make the button visible.
-
-Drag a *Button* from the *node library* pane on the left side of SpriteBuilder onto the scene. Set its *position* to `(50%, 50%)` and *title* to `Restart`.
-
-![](./SpriteBuilder_MainScene_Restart.png)
-
-Create a `doc root var` code connection to `restartButton` so we can flip the visibility after a game over. Also set the *selector* to `restart` and the *target* to `Document root`. This will trigger the `restart` method of `MainScene.swift` whenever the button is pressed.
-
-![](./SpriteBuilder_MainScene_Restart_CC.png)
+![image](afterPlayButton.png)
 
 Uncheck the *visible* box for now.
 
-**Add a Timer Bar**
+###Add a Timer Bar
 
-Drag `life_bg.png` onto the scene. Set its *reference corner* to `top-left` and its *position* to `(50%, 40)`. This will ensure it is centered and near the top of the screen on all devices.
+Drag *life_bg.png* onto the scene. Name it "lifeBG". Set the *anchor point* to (0.5, 1.0) and its *position* to (50%, 98%). This will ensure it is centered and near the top of the screen on all devices.
 
-Drag `life.png` onto the timeline as a child of `life_bg`. This will serve as our remaining time. Set its *position* to `(9, 50%)` and *anchor point* to `(0, 0.5)`. We will be changing the *x scale* via code to reflect the current amount of time left. The anchor point will ensure the left side is always positioned near the left edge of the life_bg border.
+Drag *life.png* onto the scene and set it as a child of *life_bg*. Name it "lifeBar". This sprite will show the remaining time. Set its *anchor point* to (0, 0.5)  Set the *x-postion* to 17px and the *y-position* to 50%. This should center the red life bar on its background.
+
+We will be changing the *Horizontal Scale %* in code to reflect the current amount of time remaining. The anchor point will ensure the left side is always positioned near the left edge of the life_bg border. For now, set the *Horizontal Scale %* to 50.
 
 Your scene and timeline should now look like this:
 
-![](./SpriteBuilder_MainScene_Life.png)
+![image](finalP3.png)
 
-Congratulations! You have finished setting up everything in SpriteBuilder for our basic gameplay demo. We'll come back to SpriteBuilder to polish up things after we get the code working.
+Congratulations! You have finished setting up everything in Cocos Studio for our basic gameplay demo. We'll come back to Cocos Studio to polish up things after we get the code working.
