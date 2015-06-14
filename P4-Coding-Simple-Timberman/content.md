@@ -3,47 +3,261 @@ title: "Time to Start Coding!"
 slug: coding-simple-timberman
 ---
 
-**Create the Code Files**
+Time to code! In this step we are going to hook up the UI we've created in Cocos Studio with the game logic we're going to code in Xcode.
 
-We'll need three Swift classes for our game right now:
+> [action]
+Open your Xcode project if it isn't already. 
 
-1. `MainScene.swift`
-2. `Character.swift`
-3. `Piece.swift`
+Your Xcode project is contained inside the *proj.ios_mac* sub-directory in the directory where your Cocos Studio project lives. If you don't remember where you saved it, search for your project name *SushiNeko.xcodeproj* in Spotlight (magnifying glass at the top right of your Mac's screen).
 
-`MainScene.swift` has already been created for us by SpriteBuilder so only need to create two.
+First we're going to make some changes to the generated template code to make the game work on any device resolution.
 
-If you haven't already, open up `SushiNeko.xcodeproj` -- it should be in your `SushiNeko.spritebuilder` folder.
+Modify AppDelegate.cpp
+======================
 
-In Xcode, go to `File > New > File`. Select `iOS Source` from the left side and then `Swift File`. Press `Next` and save it as `Character` in your `Source` folder.
+First we will modify our AppDelegate class.  The AppDelegate is the class that handles interfacing with the operating system.  For example, `void AppDelegate::applicationDidEnterBackground() ` is called every time your game is backgrounded.
 
-Define the `Character` class as a subclass of `CCSprite` in the newly created file.
+We're going to modify `bool AppDelegate::applicationDidFinishLaunching()`. This method is called the first time your game is loaded, and is where most of our game-specific Cocos2d-x setup occurs. 
 
-> [solution]
-> It should look like this:
+> [action]
+Change this line:
 >
->       class Character: CCSprite {
+	director->getOpenGLView()->setDesignResolutionSize(640, 960, ResolutionPolicy::SHOW_ALL);
+>	
+to look like this:
 >
->       }
+	glview->setDesignResolutionSize(640, 960, ResolutionPolicy::FIXED_WIDTH);
+	
+This will make sure that the game won't be letterboxed (black bars appearing on the top and bottom) for the various iPhone resolutions. Notice that the design resolution here is the same as what we have set in Cocos Studio!
 
-Follow the same steps to create `Piece.swift` and define the `Piece` class as a subclass of `CCNode` in the newly create file.
+Now we'll add in the code that will tell Cocos2d-x where to look for assets for various screen resolutions.
 
-> [solution]
-> It should look like this:
+Below this line:
+
+	FileUtils::getInstance()->addSearchPath("res"); 
+	
+Add the following:
+
+	std::vector<std::string> searchResolutionsOrder(1);
+    
+    cocos2d::Size targetSize = glview->getFrameSize();
+    
+    if (targetSize.height < 481.0f)
+    {
+        searchResolutionsOrder[0] = "resources-1x";
+    }
+    else if (targetSize.height < 1137.0f)
+    {
+        searchResolutionsOrder[0] = "resources-2x";
+    }
+    else if (targetSize.height < 2047.0f)
+    {
+        searchResolutionsOrder[0] = "resources-3x";
+    }
+    else
+    {
+        searchResolutionsOrder[0] = "resources-4x";
+    }
+    
+    FileUtils::getInstance()->setSearchResolutionsOrder(searchResolutionsOrder);
+
+This code tells Cocos2d-x to use different assets depending on the pixel height of the display.  For example, if the height is between 1137 and 2047 pixels, it will load images from the *resources-3x* directory.
+
+Modify HelloWorldScene.cpp
+==========================
+
+Because of a bug in Cocos2d-x (specifically the code that reads our Cocos Studio files), we have to add a bit of code to ensure that the positions of our objects that we created in Cocos Studio are correctly repositioned for various resolutions.
+
+> [action]
+In *HelloWorldScene.cpp*, right below this line: `auto rootNode = CSLoader::createNode("MainScene.csb");`
 >
->       class Piece: CCNode {
+Add the following:
 >
->       }
+    Size size = Director::getInstance()->getVisibleSize();
+    rootNode->setContentSize(size);
+    ui::Helper::doLayout(rootNode);
+    
+In general, these lines will have to be added after loading any new scene from a *.csb* file until the bug is fixed!
 
-**Testing the project**
+Press the play button to see the UI of your game in the iOS simulator! 
 
-You should now be able to run the project in Xcode. If you had tried earlier it would have crashed as soon as it launched because it could not find the `Character` and `Piece` classes.
+It should look something like this:
 
-Hit the run button to try it out. You should launch to the `MainScene` we created in SpriteBuilder. Nothing will work yet and there will be a few complaints in the console output but it should launch without crashing.
+![image](firstRun.png)
 
-Its time to start filling in our code!
+Rename HelloWorldScene
+=====================
 
-**What's next**
+Unfortunately, the default Cocos Studio new project template gives the main scene the name `HelloWorldScene`. Because it's a good practice to give classes names that describe their function, we're going to rename `HelloWorldScene` to `MainScene`. Also that way the scene in Cocos Studio, *MainScene.csd*, matches the scene in code. This is a good opportunity to learn about Xcode's project search feature.
+
+Click the third tab on Xcode's left panel. 
+
+![image](thirdTab.png)
+
+Search for *HelloWorldScene*. You should find two results. 
+
+![image](findHelloWorldScene.png)
+
+Change the search from *Find > Text > Containing* to *Replace > Text > Containing*.  
+
+![image](switchToReplace.png)
+
+Use the *Replace All* button to replace the instances of *HelloWorldScene* with *MainScene*. 
+
+![image](replaceHelloWorldScene.png)
+
+Xcode may ask you if you want to take a snapshot before performing the operation. You should *disable* snapshotting - it's a form of version control, but not a very good one. Instead consider using [git.](https://git-scm.com/).
+
+![image](disableSnapshotting.png)
+
+Now do the same thing, except replace all instances of *HelloWorld* with *MainScene*. 
+
+![image](replaceHelloWorld.png)
+
+Generally speaking, you should be very careful using replace all functionality in text editors - it's very easy to unintentionally replace something that you didn't intend to. It's a better practice to check each result individually and use the *Replace* button to replace one at a time, instead of doing all of them with *Replace All*. However, for the purposes of this tutorial, doing a *Replace All* was okay.
+
+Finally, rename *HelloWorldScene.h* and *HelloWorldScene.cpp* to *MainScene.h* and *MainScene.cpp*.  It's easy to rename files in Xcode, just click the file, hit the enter key, then type the name.
+
+![image](renameMainScene.png)
+
+You will likely often find yourself using Xcode's Find feature - it's a very fast way to look for a piece of code.
+
+Set Up Custom Classes in Cocos Studio
+=====================================
+
+Now let's go back to our Cocos Studio project. We're going to create *Custom Class* linkages for the Character and Piece objects we made.  This will allow us to define custom behaviors for those objects in code.  We didn't do this step earlier because setting a custom class in Cocos Studio will cause the game to crash when its run if the custom classes are not also defined in code.
+
+Open *Character.csd*.  Click the root (topmost) node in the timeline.  It's called Node.  Then, in the *Properties* panel on the right, click the *Advanced* tab.  Set the *Custom Class* to Character.
+
+It looks like this:
+
+![image](customClassCharacter.png)
+
+Now do the exact same steps for *Piece.csd* - set its custom class to Piece.
+
+**Save and publish the Cocos Studio project before moving on!**
+
+
+Create Some Classes
+===================
+
+Now we'll create the code for the custom classes we just set up in Cocos Studio. We'll need four new classes for our game right now:
+
+1. `Character`
+2. `CharacterReader`
+3. `Piece`
+4. `PieceReader`
+
+In Xcode, go to *File > New > File*. Select *C++ File*.  Name it *Character*.
+
+![image](createCharacter.png)
+
+Save it in your *Classes* folder. Check the box labeled SushiNeko Mac so that this file is available in both the iOS and Mac targets.
+
+![image](saveInClassesFolder.png)
+
+Define the `Character` class as a subclass of `Node` in *Character.h*.
+
+	#ifndef __SushiNeko__Character__
+	#define __SushiNeko__Character__
+
+	#include "cocos2d.h"
+
+	class Character : public cocos2d::Node
+	{
+	public:
+	    CREATE_FUNC(Character);
+	    
+	protected:
+	    
+	};
+	
+	#endif /* defined(__SushiNeko__Character__) */
+
+Now let's create the CharacterReader class.  Whenver we create an object in Cocos Studio and give it custom behaviors by linking it to a custom class, we have to create a corresponding Reader class to load and link the Cocos Studio object with its associated code. Create a new C++ file called *CharacterReader*. 
+
+Add the following code in-between the header guards of *CharacterReader.h*
+
+	#include "cocos2d.h"
+	#include "cocostudio/WidgetReader/NodeReader/NodeReader.h"
+
+	class CharacterReader : public cocostudio::NodeReader
+	{
+	public:
+	    static CharacterReader* getInstance();
+	    static void purge();
+	    cocos2d::Node* createNodeWithFlatBuffers(const flatbuffers::Table* nodeOptions);
+	};
+
+Then in *CharacterReader.cpp*, add the following:
+
+	#include "CharacterReader.h"
+	#include "Character.h"
+
+	using namespace cocos2d;
+
+	static CharacterReader* _instanceCharacterReader = nullptr;
+
+	CharacterReader* CharacterReader::getInstance()
+	{
+	    if (!_instanceCharacterReader)
+	    {
+	        _instanceCharacterReader = new CharacterReader();
+	    }
+	    return _instanceCharacterReader;
+	}
+
+	void CharacterReader::purge()
+	{
+	    CC_SAFE_DELETE(_instanceCharacterReader);
+	}
+
+	Node* CharacterReader::createNodeWithFlatBuffers(const flatbuffers::Table *nodeOptions)
+	{
+	    Character* node = Character::create();
+	    setPropsWithFlatBuffers(node, nodeOptions);
+	    return node;
+	}
+
+This is all boilerplate code required by Cocos2d-x to read Cocos Studio objects.  The code will be the same for every reader class, except you will replace all instances of `CharacterReader` with `YourClassReader` and `Character` with `YourClass`.  Because the code is the same and you won't really interact with it much, it's not super important to understand it.  But if you're interested, here's some additional information:
+
+> [info]
+> CharacterReader is a singleton, which means that (when used correctly) there will only ever be a single instance of it.  The line 
+> 
+> 	`static CharacterReader* _instanceCharacterReader = nullptr;`
+> 
+> Together with the implementation of `CharacterReader::getInstance()` are the canonical way to create singletons in Cocos2d-x projects. When interacting with singletons, instead of creating new objects with `new` or `create()`, instead you always retrieve the single instance with `getInstance()` and interact with that.
+> 
+> Purge is called by Cocos2d-x when the reader is no longer needed, to delete it.
+> 
+> `createNodeWithFlatBuffers` is what's called by the Cocos2d-x code to create and initialize the object with the properties set in Cocos Studio. 
+
+**Follow the same steps to create the `Piece` and `PieceReader` classes.**
+
+After you've done that, we have to tell Cocos2d-x where to find the reader classes.  Open *MainScene.cpp* and below these lines in `init`:
+
+    if ( !Layer::init() )
+    {
+        return false;
+    }
+
+Add the following:
+
+    // Register the readers for our custom classes
+    // Be very careful to do CharacterReader::getInstance, not CharacterReader::getInstance() which will crash
+    CSLoader* instance = CSLoader::getInstance();
+    instance->registReaderObject("CharacterReader", (ObjectFactory::Instance) CharacterReader::getInstance);
+    instance->registReaderObject("PieceReader", (ObjectFactory::Instance) PieceReader::getInstance);
+
+You'll notice that the compiler complains, it will say something like "Use of undeclared identifier 'CharacterReader'".  That's because we haven't yet told the compiler about our `CharacterReader` and `PieceReader` classes.  To do that, add the following to the other `#includes` commands:
+
+	#include "CharacterReader.h"
+	#include "PieceReader.h"
+
+Try running again.  It might look the same
+
+What's Next
+===========
 
 We'll be building the game's code piece by piece. Our plan is to:
 
