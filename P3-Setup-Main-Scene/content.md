@@ -57,3 +57,24 @@ Your scene and timeline should now look like this:
 ![image](finalP3.png)
 
 Congratulations! You have finished setting up everything in Cocos Studio for our basic gameplay demo. We'll come back to Cocos Studio to polish up things after we get the code working.
+
+Copy Resources
+=======================
+> [action]
+Now save, and publish to Xcode.
+
+We have to do one more thing before we start coding. The way Cocos Studio works, it only publishes resources that are actually used in Cocos Studio. So far we've only used *2x* sized assets from the *resources-2x* directory. But we want to be able to use all the asset sizes in our project, depending on the resolution of the device.
+
+To make sure we can access all the resources in Xcode, we'll copy the Assets directory from where Cocos Studio reads them into the publish directory.
+
+> [action]
+Navigate to your project directory and open *cocosstudio*. Copy the *Assets* directory.
+
+![image](findAssets.png)
+
+> [action]
+Then open *Resources* and *res*. Paste the Assets directory here. Choose replace if it asks you whether you'd like to replace Assets.
+
+![image](pasteAssets.png)
+
+Now all the assets from the art pack will be accessible in your Xcode project.
