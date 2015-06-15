@@ -254,10 +254,10 @@ You'll notice that the compiler complains, it will say something like "Use of un
 	#include "CharacterReader.h"
 	#include "PieceReader.h"
 
-Try running again.  It might look the same
+Try running again.  It might look the same, but as long as it doesn't crash, that means that our `Character` and `Piece` custom classes are working!
 
-What's Next
-===========
+Building the Sushi Tower
+========================
 
 We'll be building the game's code piece by piece. Our plan is to:
 
@@ -269,112 +269,254 @@ We'll be building the game's code piece by piece. Our plan is to:
 6. Get the timer working
 7. Update the score
 
-**Building the Sushi Tower**
+We'll build the sushi tower up in the `init` method so that it's added before `MainScene` is shown to the player.
 
-We'll build the sushi tower up in the `didLoadFromCCB` method so that it's added before `MainScene` is shown to the player.
+Our goal is to create a tower ten pieces high. When we start moving that tower down, we'll actually move the bottom piece back to the top of the tower instead of removing it from the scene. This will save a bit of processing power since we will be reusing the same objects.
 
-Our goal is to create a tower ten pieces high. When we start moving that tower down, we'll actually move the bottom piece back to the top of the tower instead of removing it from the scene. This will save a bit of processing power since we are reusing the same objects.
+We will need two instance variables to create the tower - one is the `pieceNode` that we've already created in Cocos Studio - we'll add sushi roll pieces to that node.  The second is a `Vector` of pieces called `pieces`. We'll store references to the pieces in the tower in the `pieces` vector.
 
-Start off by defining `didLoadFromCCB`.
+Go to *MainScene.h* and add a `private:` declaration below `CREATE_FUNC(MainScene);`
 
-> [solution]
-> It should look like:
->
->       func didLoadFromCCB() {
->
->       }
+Below the `private:` declaration, declare the following two instance variables:
 
-We'll also need access to one of those code connections we added in SpriteBuilder. Add an instance variable to `MainScene` for `piecesNode`. You should also create an empty Piece array called `pieces`.
+    cocos2d::Node* pieceNode;
+    cocos2d::Vector<Piece*> pieces;
+    
+The compiler will complain that it doesn't know what a `Piece*` is. Fix that by including `Piece.h` at the top.
 
-> [solution]
-> After the opening curly brace in `class MainScene: CCNode {` add:
->
->       var piecesNode: CCNode!
->       var pieces: [Piece] = []
->
-> Remember, we always use *implicitly unwrapped optionals* (the !) for code connections from SpriteBuilder.
+Open *MainScene.cpp*. Near the end of `MainScene::init()` but before `addChild(rootNode);`, add the following:
 
-Inside the `didLoadFromCCB` method, load in ten instances of `Piece.ccb` and position them so they build up a tower. Add each piece as a child of `piecesNode` and use the `contentSizeInPoints` of the piece to calculate the offset in its y-position. Ten instances of `Piece.ccb` should be enough to cover the screen of any device you build on.
+	this->pieceNode = rootNode->getChildByName("pieceNode");
+	
+This grabs a reference to the `Node` labeled *pieceNode* in Cocos Studio and saves it in the variable `pieceNode`. The `this` is optional, but is good style because it makes it more clear that `pieceNode` is an instance variable of this class, `MainScene`.
 
-Give it a shot then run the project to see if your solution worked.
+Now we shall load ten instances of `Piece.csd` and position them so they build up a tower. Hoever, we have a problem. We need to know the height of the sushi roll so that we can stack them on top of each other. Recall that *Piece.csd* is actually a `Node`, and that the roll `Sprite` is a child of that `Node`.  So if we load a piece, and use the `getContentSize()` method, it will return the content size of the root `Node` (which is (0, 0)) instead of the content size of the roll.
 
-> [solution]
-> One possible way to write `didLoadFromCCB` is:
+We could just grab a reference to the underlying `Sprite` to get the height like this:
+
+	piece->getChildByName("roll")->getContentSize().height;
+	
+But this code is fragile - if we changed the name of "roll" in Cocos Studio, then every place this line of code appears in our project would also have to change.  A better way to do it is to use the concept of [encapsulation](https://en.wikipedia.org/wiki/Encapsulation_(computer_programming)). The piece class should have a public method that returns the height of the roll.
+
+We're going to create a new method in `Piece` called `getSpriteHeight()`.
+
+So open *Piece.h* and under the `public:` keyword declare this:
+
+	float getSpriteHeight();
+	
+Now flip to *Piece.cpp*. First, below `include "Piece.h` write:
+
+	using namespace cocos2d;
+	
+This tells the compiler that it can infer the usage of the cocos2d namespace for all the code in *Piece.cpp*. We'll talk a bit more about that in a bit.  For now lets implement `getSpriteHeight()`:
+
+	float Piece::getSpriteHeight()
+	{   
+	    // first grab a reference to the roll sprite
+	    Sprite* roll = this->getChildByName<Sprite*>("roll");
+	    
+	    // then return the roll sprite's height
+	    return roll->getContentSize().height;
+	}
+
+Remember the `using namespace cocos2d;` declaration at the top?  Without declaring `using namespace cocos2d` at the top, the `getChildByName` line would look like this:
+
+	    // first grab a reference to the roll sprite
+	    cocos2d::Sprite* roll = this->getChildByName<cocos2d::Sprite*>("roll");
+	  
+For this method it has saved us having to type `cocos2d::` twice. For others it can save us typing `cocos2d::` much more. Generally speaking, whenever implementing a class that interacts with Cocos2d-x, it makes sense to declare `using namespace cocos2d;` at the top.
+
+Okay, now we can go back to *MainScene.cpp* to create our sushi tower.  Below where we assigned `pieceNode`, create a for loop that loops 10 times:
+
+	for (int i = 0; i < 10; ++i)
+	{
+
+	}
+	
+Inside the loop, do the following.  Create a piece:
+
+	Piece* piece = dynamic_cast<Piece*>(CSLoader::createNode("Piece.csb"));
+	
+Because `CSLoader::createNode()` returns a `Node`, we have to downcast it using `dynamic_cast` into a `Piece`. To learn more about the kinds of typecasting in C++, check out [this](http://www.cplusplus.com/doc/tutorial/typecasting/) article.
+
+Next, create a `float` called `rollHeight` and assign the height of the roll using the `Piece` method that we just created.
+
+Use `rollHeight` to set the position of the roll like this:
+
+	piece->setPosition(0.0f, rollHeight / 2.0f * i);
+	
+We divide by `2.0f` because we don't want the rolls to be evenly spaced without overlapping - we want them to be stacked on top of each other.
+
+Next, add the `piece` to both the `pieceNode` and our `pieces` `Vector`.
+
+        this->pieceNode->addChild(piece);
+        this->pieces.pushBack(piece);
+  
+> [info]     
+> Note that instead of using the arrow syntax to add the piece to pieces, we use the dot syntax. That's because the pieces vector is declared as an object directly, not a pointer to an object. Look at the declaration in *MainScene.h*, it looks like this:
 >
->       for i in 0..<10 {
->           var piece: Piece = CCBReader.load("Piece") as! Piece
+>	`cocos2d::Vector<Piece*> pieces;`
+> 	
+> If we were instead declaring `pieces` as a pointer to a `Vector`, it would look like this:
 >
->           var yPos = piece.contentSizeInPoints.height * CGFloat(i)
->           piece.position = CGPoint(x: 0, y: yPos)
->           piecesNode.addChild(piece)
->           pieces.append(piece)
->       }
+> 	`cocos2d::Vector<Piece*>* pieces;`
 >
-> In each iteration of the for-loop we load in a new `Piece` from `Piece.ccb`. We then set its x-position to 0 and y-position is set to the iteration number multiplied by `piece.contentSizeInPoints`.
->
-> Remember how we manually changed the anchor point and content size of the root node in `Piece.ccb`? Now you may be able to see how those values are making our life a whole lot easier on the code side. The lowest piece is added as a child of `piecesNode` with a position of `(0, 0)` and its exactly where we want it. Each subsequent piece is offset appropriately in the y-direction so they line up into a nice tower.
->
-> If your solution is different, make sure it matches the requirements above.
+> Note the extra asterisk.  In general, directly declaring objects (instead of pointers to objects) is faster, though there's many reasons why one wouldn't. For further discussion on that topic, look at [this StackOverflow answer](http://stackoverflow.com/a/22146244). The most common reason we choose to use pointers to objects in Cocos2d-x is to preserve polymorphism.  
 
 Your game should now look like this when you run it:
 
-![](./Simulator_Pieces_Generation.png)
+![image](towerBuilt.png)
 
-Once you have it working, move onto adding touch controls.
+Now let's move on to adding touch handling.
 
-**Add Touch Controls**
+Add Touch Handling
+==================
 
-To add touch controls we first need a method we can call to move the `Character` to the right side of the screen and back. We'll be relying on a little trick to make this easy -- setting the `scaleX` to -1 flips a sprite horizontally around its anchor point. Since `Character` already has an anchor point at the center of the screen, we can us this trick to flip it to the other side.
+Before adding touch handling, we first need a method we can call to move the `Character` to the right side of the screen and back.
 
-Your job is to create two methods in Character.swift:
+First lets create an `enum` that will represent a side. The best place to put this new `enum` is actually a file we haven't created yet!
 
-1. `left` - move the character to the left side of the screen
-2. `right` - move the character to the right side of the screen
+Create a new *Header File* (*File > New > File*) and name it *Constants.h.*  **Make sure to set the targets to both the iOS and Mac projects!** It's very common to declare new types and constant values that will are used by multiple classes in a single header file called *Constants* (or sometimes *Globals*). That way, multiple classes can use the same types without having to `#include` each other. This helps to maintain [separation of concerns](https://en.wikipedia.org/wiki/Separation_of_concerns). In our case, this new `enum` will be used by the `Character`, `Piece` and `MainScene` classes, but we don't want them all to have to `#include` each other unnecessarily.
 
-We'll trigger these methods from `MainScene` when we add in the touch controls.
+Inside the header guards of *Constants.h*, create an `enum` called Side, like this:
 
-> [solution]
-> You should have added the following methods to the `Character` class:
->
->       func left() {
->           scaleX = 1
->       }
->
->       func right() {
->           scaleX = -1
->       }
+	enum class Side
+	{
+	    Left,
+	    Right,
+	    None
+	};
+	
+We will use these `enum` values to represent what side both the `Character` and the `Piece` obstacles are on.  
 
-Before we can actually detect touches, we need to complete the code connection for `character` and set `userInteractionEnabled` in the `MainScene` class.
+> [info]
+> Enums are a great way to represent different states.  `Enum` stands for `enumeration`. Essentially an `enum` is just a integer, but instead of the values being assigned numbers, like `0`, `1` and `2`, they're human-readable, like `Left`, `Right` and `None`. Under the hood, however, they actually do have integer values. For example, `Left` is really the value `0`, `Right` is really the value `1` and `None` is really the value `2`.
+> 
+> Why do `enum`s exist?  They make code much more readable.  It's too difficult, as a human, to have to remember that a `Side` value of `0` actually means that the `Character` is on the left side of the screen, and that `1` means that the `Character` is on the right side.
+> 
+> Why not just use a `std::string` instead?  It's much slower to compare two `std::string` types, and they occupy more memory.  
 
-> [action]
-> Add this near where you declared the other instance variables:
->       var character: Character!
->
-> Add this to the end of `didLoadFromCCB` in `MainScene.swift`:
->
->       userInteractionEnabled = true
+Now, in *Character.h*, it's your job to declare a `protected` instance variable called `side` of type `Side` that represents which side of the screen the `Character` is on, and also public getter and setter methods to modify the value of `side`.
 
-Now we can override `touchBegan` and add in our code.
-
-> [action]
-> Create and empty `touchBegan` method in `MainScene.swift`:
->
->       override func touchBegan(touch: CCTouch!, withEvent event: CCTouchEvent!) {
->
->       }
-
-Inside `touchBegan`, try using `touch.locationInWorld().x` and `CCDirector.sharedDirector().viewSize().width` to determine which side of the screen a touch is on. Call `character.left()` and `character.right()` to trigger the correct movements.
+We'll use these methods from `MainScene` when we add in the touch handling.
 
 > [solution]
-> The `touchBegan` method should look like:
+> You should have added the following `public` methods to *Character.h*:
 >
->       var xTouch = touch.locationInWorld().x
->       var screenHalf = CCDirector.sharedDirector().viewSize().width / 2
->       if xTouch < screenHalf {
->           character.left()
->       } else {
->           character.right()
->       }
+	void setSide(Side side);
+	Side getSide();
+>
+> And this `protected` instance variable
+>
+	Side side;
+
+Don't forget to `#include "Constants.h"`. Now add in the implementations of the getter and setter methods in *Character.cpp*.
+
+> [solution]
+> 
+	Side Character::getSide()
+	{
+	    return this->side;
+	}
+>
+	void Character::setSide(Side side)
+	{
+	    this->side = side;
+	}
+
+Okay, so the `Character` class has an instance variable that represents what side the character is on. But it doesn't actually move the `Character` on the screen! We'll be relying on a little trick to make this easy - setting the `scaleX` to *-1.0f* flips a sprite horizontally around its anchor point. Since `Character` already has an anchor point at the center of the screen, we can us this trick to flip it to the other side.
+
+Modify `setSide` to appropriately flip the character to the right side of the screen if it's set to `Right` and back to the left side if it's set to `Left`.
+
+> [solution]
+> After `this->side = side;` you should have added something like this:
+> 
+	if (this->side == Side::Right)
+	{
+		this->setScaleX(-1.0f);
+	}
+	else
+	{
+		this->setScaleX(1.0f);
+	}
+
+Before we can start detecting touch events, `MainScene` needs to have a reference to the `Character` created in Cocos Studio, so that it can move the `Character` left and right. In *MainScene.h*, declare a `protected` `Character` instance variable, like this:
+
+	Character* character;
+	
+This is all fine and dandy, but the compiler is probably complaining:
+> Unknown type name 'Character'
+
+We could fix this by writing `#include Character.h` in *MainScene.h*, but there's a better way!  Whenever possible, instead of including a source file into a header, it's better to forward declare the classes you need access to. You can read about C++ forward declaration [here](http://stackoverflow.com/a/4757718). It's a good idea because it speeds up your compilation time, separates declaration from implementation and fixes cyclic dependences between classes.
+
+So above 
+
+	class MainScene : public cocos2d::Layer
+	
+Forward declare `Character` like this:
+
+	class Character;
+	
+Doing that tells the compiler that there's a `class` called `Character`, so that you can use that type name in your method and instance variable declarations. It doesn't need to worry about what `Character` actually is until the implementation of `MainScene`. So flip to *MainScene.cpp* and `#include Character.h` there.	    
+
+We can grab the reference to the `Character` in the `init()` method. Right below where we intialized `this->pieceNode`, add this code:
+
+    this->character = rootNode->getChildByName<Character*>("character");
+    
+`getChildByName` is a templated method (as indicated by the `<` and `>` characters). In this case, we can tell the method what kind of class we're getting, so that it can return that type, and we don't have to do any casting.  So we tell `getChildByName` that it's going to return a `Character*`, which means we don't have to use a `dynamic_cast` like we did when we instantiated the `Piece` objects for the tower.
+
+Now we can start detecting touch events. In order to detect whether or not the touch is on the left or right side of the screen, we need to know the `contentSize` of the scene. But size information is yet not available to us in the `init()` method. Instead we'll have to do our touch handling setup in the `onEnter()` method, after the scene has been created and has size information. Go to *MainScene.h* and declare a new `protected` method: 
+
+	void onEnter() override;
+	
+We use the `override` keyword to tell the compiler that we're overriding a superclass method.
+
+Now in *MainScene.cpp*, implement `onEnter()`.
+
+	void MainScene::onEnter()
+	{
+	    Layer::onEnter();
+	}
+	
+When overriding superclass methods, it's very important to remember to call the superclass implementation, or things may break. In this case, the superclass of `MainScene` is `Layer`, so we call `Layer::onEnter();`
+
+Now it's your job to create a `protected` method called `setupTouchHandling()`. It takes no parameters and returns `void`.
+
+After you have declared `setupTouchHandling()` in *MainScene.h* and implemented an empty method in *MainScene.cpp*, call it from `onEnter()`.
+
+> [solution]
+> 
+	void MainScene::onEnter()
+	{
+	    Layer::onEnter();
+	    
+	    this->setupTouchHandling();
+	}
+
+Now we shall fill in the contents of `setupTouchHandling()`. It should look like this:
+
+	auto touchListener = EventListenerTouchOneByOne::create();
+	    
+	touchListener->onTouchBegan = [&](Touch* touch, Event* event)
+	{
+	   // get the location of the touch in the MainScene's coordinate system
+	   Vec2 touchLocation = this->convertTouchToNodeSpace(touch);
+	   
+	   // check if the touch was on the left or right side of the screen
+	   // move the character to the appropriate side
+	   if (touchLocation.x < this->getContentSize().width / 2.0f)
+	   {
+	       this->character->setSide(Side::Left);
+	   }
+	   else
+	   {
+	       this->character->setSide(Side::Right);
+	   }
+	   
+	   return true;
+	};
+	
+	this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(touchListener, this);
 
 You should now be able to move the character from one side to another and back:
 
