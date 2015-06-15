@@ -517,25 +517,26 @@ Now we shall fill in the contents of `setupTouchHandling()`. It should look like
 	};
 	
 	this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(touchListener, this);
+	
+The `touchListener` is an `EventListenerTouchOneByOne` which means it will report touches to us one at a time. There's also `EventListenerTouchAllAtOnce` which reports multiple touches at the same time, which is helpful for games that can respond to multi-touch gestures.
+
+Timberman is a fast-paced game, and we want it to be very responsive. So we're going to respond to the touch event right at the moment it's registered, which is why the character movement code is in the `onTouchBegan` lambda expression block.  There's also `onTouchMoved`, `onTouchEnded`, and `onTouchCancelled` which do what they sound like. Often the right one to use depends on context.
+
+> [info]
+> Notice that the code we write inside `onTouchBegan` isn't executed immediately - instead it's saved to be executed at a later date. This is a new feature in C++11 called a *lambda expression*, (also sometimes known as a *block*, *anonymous function* or *closure*). To learn more about them, check out [this article here](https://en.wikipedia.org/wiki/Anonymous_function#C.2B.2B_.28since_C.2B.2B11.29).
+
+Inside the `touchBegan` block, we convert the touch from the global coordinate system to the node space of the scene. The way we can tell if the touch was on the left side on the screen by comparing the x-value to see if it's less than half the content size.
 
 You should now be able to move the character from one side to another and back:
 
-![](./Simulator_Touch_Detect.gif)
+<video>
+	<source src="https://s3.amazonaws.com/mgwu-misc/Sushi+Neko+Cpp/touchHandling.mov" type="video/mp4">
+</video>
 
-**Randomize Each Obstacle's Side**
-
-Before we start randomizing the obstacle side, we should declare an enum to add uniformity to checking sides in code.
-
-> [action]
-> At the top of `MainScene.swift` (before the class declaration) add:
->
->       enum Side {
->           case Left, Right, None
->       }
-
-Now we can refer to the type `Side` with three different values: Left, Right, and None. This will make our lives a lot easier throughout our code.
-
-Let's setup the `Piece` class. We need to complete the code connections to `left` and `right` (our chopstick sprites from SpriteBuilder) and add a `side` variable to keep track of which obstacle is showing. We want this variable to trigger the correct visibility of `left` and `right` each time it changes.
+Randomize Each Obstacle's Side
+==============================
+ 
+Let's set up the `Piece` class. We need to complete the code connections to `left` and `right` (our chopstick sprites from SpriteBuilder) and add a `side` variable to keep track of which obstacle is showing. We want this variable to trigger the correct visibility of `left` and `right` each time it changes.
 
 > [action]
 > Open up `Piece.swift` and add this to the top of the class declaration:
