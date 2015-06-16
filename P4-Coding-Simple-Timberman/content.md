@@ -529,93 +529,160 @@ Inside the `touchBegan` block, we convert the touch from the global coordinate s
 
 You should now be able to move the character from one side to another and back:
 
+<!-- TODO: Uncomment when done editing P4
+
 <video>
 	<source src="https://s3.amazonaws.com/mgwu-misc/Sushi+Neko+Cpp/touchHandling.mov" type="video/mp4">
 </video>
 
+-->
+
 Randomize Each Obstacle's Side
 ==============================
  
-Let's set up the `Piece` class. We need to complete the code connections to `left` and `right` (our chopstick sprites from SpriteBuilder) and add a `side` variable to keep track of which obstacle is showing. We want this variable to trigger the correct visibility of `left` and `right` each time it changes.
+Let's set up the `Piece` class. Just like how we created the `side` property in `Character`, with `setSide` and `getSide` methods, we're going to do the same thing in `Piece`, except call it `setObstacleSide` and `getObstacleSide`.  Set up the instance variable, and the getter and setter methods - we'll talk about some additional functionality for the setter afterwards. Try to do this without looking at the solution code!
+
+> [solution]
+> 
+> *Piece.h*
+> 
+ 	public:
+		void setObstacleSide(Side side);
+		Side getObstacleSide(); 
+>		
+	protected:
+		Side obstacleSide
+>
+>
+*Piece.cpp*
+>
+	Side Piece::getObstacleSide()
+	{
+	    return this->obstacleSide;
+	}
+>
+	void Piece::setObstacleSide(Side side)
+	{
+	    this->obstacleSide = side;
+	}
+
+Now let's make it so that when the obstacle side is set, either the `Left`, `Right` or `None` obstacle is visible, as appropriate.
+
+First grab a reference to the `roll` sprite. Use that to get references to the `leftChopstick` and `rightChopstick`, which are both children of `roll`.
+
+> [solution]
+> 
+    Sprite* roll = this->getChildByName<Sprite*>("roll");
+>
+    Sprite* leftChopstick = roll->getChildByName<Sprite*>("leftChopstick");
+    Sprite* rightChopstick = roll->getChildByName<Sprite*>("rightChopstick");
+    
+Next, use a `switch` statement to set the visibility of the chopsticks appropriately for the given `side`. `switch` statements are a great way to do conditional code branching when a variable can only take one of a constant number of values.
+
+Here's what the `switch` should look like for `setObstacleSide`:
+
+	switch (this->obstacleSide)
+	{
+		case Side::None:
+	   		break;
+	            
+	   case Side::Left:
+	      	break;
+	            
+	   case Side::Right:
+	     	break;
+	}
+	
+> [info]
+> 
+> The equivalent if statement would look like this:
+>
+	if (this->obstacleSide == Side::None)
+	{
+>
+	} 
+	else if (this->obstacleSide == Side::Left)
+	{
+>	
+	}
+	else if (this->obstacleSide == Side::Right)
+	{
+>	
+	}
+It's a little bit more ugly, but it's actually also less performant.  Switch statements can jump straight to the correct code branch based on the value being switched on, whereas if / else statements have to evaluate through the various possible conditions until finding the correct one.
 
 > [action]
-> Open up `Piece.swift` and add this to the top of the class declaration:
->
->       var left: CCSprite!
->       var right: CCSprite!
->
->       var side: Side = .None {
->           didSet {
->               left.visible = false
->               right.visible = false
->               if side == .Right {
->                   right.visible = true
->               } else if side == .Left {
->                   left.visible = true
->               }
->           }
->       }
-
-> [info]
-> The `didSet` property observer gets called each time the `side` variable is set. This allows us to trigger the correct visibility of `left` and `right`.
+> Use the switch statement and the `setVisible` method to set obstacle visibility correctly.
 
 We want our obstacles (chopsticks) to randomly choose a side but we need to have a few rules to make sure the game is fair and we do not produce an impossible to pass sequence. Our rules for obstacle generation are:
 
-1. a piece has no obstacle if the previous piece had one
-2. right should appear 45% of the time an obstacle can be added
-3. left should appear 45% of the time an obstacle can be added
-4. no obstacle should appear 10% of the time an obstacle can be added
+1. A piece has no obstacle if the previous piece had one
+2. Right should appear 45% of the time an obstacle can be added
+3. Left should appear 45% of the time an obstacle can be added
+4. No obstacle should appear 10% of the time an obstacle can be added
 
-To make sure our pieces follow these rules, we'll pass in the obstacle side of the previous piece every time we randomize a piece. Time to implement the rules!
+To make sure our pieces follow these rules, we'll pass in the obstacle side of the previous piece every time we randomize a piece. Time to implement the rules!  We'll place this logic in `MainScene`. First, declare an instance variable in *MainScene.h* of type `Side` called *lastObstacleSide*. Don't forget to `#include "Constants.h"`.
 
-> [action]
-> Create a method in the `Piece` class as follows:
->
->       func setObstacle(lastSide: Side) -> Side {
->
->       }
+In `MainScene::init()`, somewhere before we create the sushi tower, initialize `lastObstacleSide` to the value `Side::Left`. Now, inside the for loop that creates the tower, add the following two lines:
 
-Now fill it in according to our four rules. Remember to return the side that is randomly chosen.
+	this->lastObstacleSide = this->getSideForObstacle(this->lastObstacleSide);
+	piece->setObstacleSide(this->lastObstacleSide);
+	
+The first line calls our not-yet-created method, `getSideForObstacle` to generate the side for the next obstacle. It passes in the last obstacle side, so that it can generate an obstacle side that follows the rules.
 
-> [info]
-> You can call `CC_RANDOM_0_1()` to randomly generate a number between 0 and 1.
+The second line sets the newly created piece's obstacle side with the `Side` we just generated.
+
+So time to implement `void getSideForObstacle(Side lastSide)`. Try to do it yourself!  Don't forget the four rules listed above. Here's a hint - you can use the `CCRANDOM_0_1()` macro to generate a random number between 0.0f and 1.0f.
 
 > [solution]
-> The body of `setObstacle` should look like:
+`getSideForObstacle` should look something like this:
 >
->       if lastSide != .None {
->           side = .None
->       } else {
->           var rand = CCRANDOM_0_1()
->           if rand < 0.45 {
->               side = .Left
->           } else if rand < 0.9 {
->               side = .Right
->           } else {
->               side = .None
->           }
->       }
->       return side
-
-The `Piece` class is all ready so let's go back to `MainScene.swift`. We need an instance variable `lastPieceSide` to keep track of the last piece's side. This will be especially important when we start moving the sushi tower down with each tap.
-
-> [action]
-> Add this near your other instance variables in `MainScene`:
+	Side MainScene::getSideForObstacle(Side lastSide)
+	{
+	    Side side;
+>	    
+	    switch (lastSide)
+	    {
+	        case Side::None:
+	        {
+	            // generate a random number between 0.0f and 1.0f
+	            float random = CCRANDOM_0_1();
+>	            
+	            // if there wasn't an obstacle in the last piece
+	            // then there's a 45% chance of there being one on the left
+	            // 45% chance of there being one on the right
+	            // and 10% chance of there being no obstacle
+	            if (random < 0.45f)
+	            {
+	                side = Side::Left;
+	            }
+	            else if (random < 0.9f)
+	            {
+	                side = Side::Right;
+	            }
+	            else
+	            {
+	                side = Side::None;
+	            }
+	        }
+	            break;
+>	            
+	            // if there was an obstacle in the last piece, 
+	            // then there isn't one for this piece
+	        case Side::Left:
+	        case Side::Right:
+	            side = Side::None;
+	            break;
+	    }
+>	    
+	    return side;
+	}
 >
->       var pieceLastSide: Side = .Left
-
-We're setting `pieceLastSide` to `Left` so that the bottom piece always has a side of `None`.
-
-> [action]
-> Add this below the line with `var piece: Piece = CCBReader.load("Piece") as! Piece` in `didLoadFromCCB`:
->
->       pieceLastSide = piece.setObstacle(pieceLastSide)
-
-This line is pretty powerful. It both randomizes the current piece's obstacle side and updates `pieceLastSide` since we return the chosen side.
+> It's okay if it doesn't look exactly the same, as long as it works.
 
 Run the game. It should have randomized obstacles now!
 
-![](./Simulator_Random_Obstacles.png)
+![image](afterRandomization.png)
 
 **Move the Sushi Tower**
 
