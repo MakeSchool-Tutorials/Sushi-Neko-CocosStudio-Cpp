@@ -752,84 +752,210 @@ Launch the game and play around a bit. You should have an infinitely looping tow
 
 -->
 
-**Detect Collisions and Trigger Game Over**
+Detect Collisions and Trigger Game Over
+=======================================
 
-We already have a variable storing a `Side` in the `Piece` class but we need one in character before we get started. Add a `side` variable to the `Character` class. Also update the `left()` and `right()` methods accordingly.
+Now we're going to code two new methods, `isGameOver()` will check if the game is in a game over state, and `triggerGameOver()` will end the game.
+
+First, code `isGameOver()`. It should return a `bool` indicating whether or not the game is in a game over state - which is when the `character` is on the same said as the `obstacle` on the current piece.
+
+In *MainScene.h* declare `bool isGameOver()` as a `private` method. Then implement it!  If the obstacle on the current piece is on the same side as the `character`, it should return `true`, otherwise `false`. You can access the current piece the same way you did in `stepTower()`.
 
 > [solution]
-> Your `Character` class should now look like this:
->
->       var side: Side = .Left
->
->       func left() {
->           side = .Left
->           scaleX = 1
->       }
->
->       func right() {
->           side = .Right
->           scaleX = -1
->       }
+> 
+	bool MainScene::isGameOver()
+	{
+	    bool gameOver = false;
+>	    
+	    // get a reference to the lowest piece
+	    Piece* currentPiece = this->pieces.at(this->pieceIndex);
+>	    
+	    // if the obstacle and the character are touching, then game over
+	    if (currentPiece->getObstacleSide() == this->character->getSide())
+	    {
+	        gameOver = true;
+	    }
+>	    
+	    return gameOver;
+	}
+	
+Now that we can check whether or not the game is over, we'll need to add the game over state to the game. In this state, taps on the screen start a new game. We'll make a new type to track the game states just like we did with `Side`. 
 
-Now checking for collisions between the character and obstacles is as easy as comparing their `side` properties!
+At the top of *MainScene.h*, just below the `#include` statements, add the following:
 
-> [action]
-> Add a `gameOver` instance variable to `MainScene` and complete the code connection to `restartButton`:
->
->       var gameOver = false
->       var restartButton: CCButton!
->
-> Create a `isGameOver() -> Bool ` method in `MainScene`:
->
->       func isGameOver() -> Bool {
->           var newPiece = pieces[pieceIndex]
->
->           if newPiece.side == character.side { triggerGameOver() }
->
->           return gameOver
->       }
->
-> Also create `triggerGameOver()` in `MainScene`:
->
->       func triggerGameOver() {
->           gameOver = true
->           restartButton.visible = true
->       }
+	enum class GameState
+	{
+	    Playing,
+	    GameOver
+	};
+	
+Then declare a `private` instance variable that will hold the state of our game:
 
-The last step is to call `isGameOver()` at the appropriate times. Once a game over is triggered, the restart button will appear!
+	GameState gameState;
+	
+Our game starts out able to play right away, so in `MainScene::init()` set `gameState` to `GameState::Playing`.
 
-There are three types of collisions that trigger a game over in Timberman:
+Now make the `triggerGameOver()` method. The first version is going to be very simple:
 
-1. switch into - player switched into base obstacle
-2. head-on - player continued into next obstacle
-3. switch into, head-on - player switched into next obstacle
+	void MainScene::triggerGameOver()
+	{
+	    this->gameState = GameState::GameOver;
+	}
+	
+We simply set the `gameState` instance variable to the `GameOver` state - this method will get more functionality later.
 
-We can catch the first one by checking right after moving the character (in `touchBegan`) and we can catch the others by checking right after the tower is stepped (in `stepTower`).
+Now we can add some game over checks.  There are three types of collisions that trigger a game over in Timberman:
 
-> [action]
-> Add the line below to `touchBegan` right before `stepTower` is called:
->
->       if isGameOver() { return }
->
-> Also add it at the end of `stepTower`.
+1. Switch into - player switched into base obstacle
+2. Head-on - player continued into next obstacle
+3. Switch into, head-on - player switched into next obstacle
 
-Try out the game now. You'll realize that a restart button appears, but you can still continue to play and the restart button doesn't actually work.
+We can catch the switch into case by checking right after moving the character (in `touchBegan`) and we can catch the others by checking right after the tower is stepped (in `stepTower`).
 
-> [action]
-> Add the following line to the beginning of `touchBegan`:
->
->       if gameOver { return }
->
-> We also need to define the `restart()` method for `restartButton`.
->
->       func restart() {
->           var scene = CCBReader.loadAsScene("MainScene")
->           CCDirector.sharedDirector().replaceScene(scene)
->       }
+So right after the `character` side is switched, but before `stepTower()`, add this code:
 
-Now that we short-circuit out of `touchBegan` after a game over, the player can no longer continue playing after a collision. `restart()` has also been defined so we can try again after losing.
+	if (this->isGameOver())
+	{
+		this->triggerGameOver();
+		return true;
+	}
+	
+This checks if the game is over, and if it is it triggers the game over state. We return immediately so that the tower isn't stepped. Returning `true` indicates to the touch handler that the touch was consumed - it doesn't need to send it on to any other handlers.
+
+Now add a second copy of the game over checking code immediately following `stepTower()`. This will handle the head-on and switch into, head-on cases.
+
+Now we'll modify the `onTouchBegan` so that if the game is already over, a touch from the user will trigger a new game.
+
+Right at the top of `onTouchBegan`, add a `switch` statement on `gameState` with two cases, `Playing` and `GameOver`:
+
+	switch (this->gameState)
+	{ 
+		case GameState::Playing:
+		{
+		
+		}
+	   		break;
+	        
+	 	case GameState::GameOver:
+	   		break;
+	}
+
+Inside the braces of the `GameState::Playing` case, paste your existing touch handling code, starting with `Vec2 touchLocation =`... and ending right before the last `return true`.  
+
+> [solution]
+> 
+> Your whole `setupTouchHandling` method should now look like this:
+> 
+	void MainScene::setupTouchHandling()
+	{
+	    auto touchListener = EventListenerTouchOneByOne::create();
+>	    
+	    touchListener->onTouchBegan = [&](Touch* touch, Event* event)
+	    {
+	        switch (this->gameState)
+	        {
+	            case GameState::Playing:
+	            {
+	                // get the location of the touch in the MainScene's coordinate system
+	                Vec2 touchLocation = this->convertTouchToNodeSpace(touch);
+>	                
+	                // check if the touch was on the left or right side of the screen
+	                // move the character to the appropriate side
+	                if (touchLocation.x < this->getContentSize().width / 2.0f)
+	                {
+	                    this->character->setSide(Side::Left);
+	                }
+	                else
+	                {
+	                    this->character->setSide(Side::Right);
+	                }
+>	                
+	                if (this->isGameOver())
+	                {
+	                    this->triggerGameOver();
+	                    return true;
+	                }
+>	                
+	                this->stepTower();
+>	                
+	                if (this->isGameOver())
+	                {
+	                    this->triggerGameOver();
+	                    return true;
+	                }
+	            }
+	                break;
+>	                
+	            case GameState::GameOver:
+	                break;
+	        }
+>	        
+	        return true;
+	    };
+>	    
+	    this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(touchListener, this);
+	}
+
+Inside of `case GameState::GameOver` add the following two method calls:
+
+	this->resetGameState();
+	this->triggerPlaying();
+	
+These methods aren't coded yet, so let's make them. Add `private` declarations for both in *MainScene.h*
+
+    void resetGameState();
+    void triggerPlaying();
+    
+For now `resetGameState()` is pretty simple - it just makes sure that the lowest piece doesn't have an obstacle on it, so that if the game ended with the `character` colliding with an obstacle then the next game won't start in a bad state. Try to code it yourself! Grab the `currentPiece` the way we have before, and set the `obstacleSide` to `Side::None`.
+
+> [solution]
+> 
+	void MainScene::resetGameState()
+	{
+	    // make sure the lowest peice doesn't have an obstacle when the new game starts
+	    Piece* currentPiece = this->pieces.at(this->pieceIndex);
+	    currentPiece->setObstacleSide(Side::None);
+	}
+
+Now let's write `triggerPlaying()`. For now, it looks exactly like `triggerGameOver()` except it sets the `gameState` to `GameState::Playing`.
+
+> [solution]
+> 
+	void MainScene::triggerPlaying()
+	{
+	    this->gameState = GameState::Playing;
+	}
+
+Try running it!  Now when the cat collides with an obstacle, the next touch will remove the obstacle and restart the game.
 
 The core gameplay is pretty close to completion. The only thing left is the timer and score!
+
+**Update the Score**
+
+The score implementation is pretty similar the timer. We'll complete the `scoreLabel` code connection. Then we'll set up an instance variable with a `didSet` property observer to track the score and update the `scoreLabel`. Finally, we'll increment `score` at the end of `stepTower`.
+
+Try and see if you can implement it on your own!
+
+> [solution]
+> Add the following to complete the code connection for `scoreLabel`:
+>
+>       var scoreLabel: CCLabelTTF!
+>
+> Create a `score` instance variable with a `didSet` property observer to update `scoreLabel`:
+>
+>       var score: Int = 0 {
+>           didSet {
+>               scoreLabel.string = "\(score)"
+>           }
+>       }
+>
+> Increment score at the end of `touchBegan`:
+>
+>       score++
+
+Congrats! You have completed the core gameplay for Sushi Neko, a Timberman clone! Continue onto part two to polish up the gameplay :)
+
+![](./Simulator_MVP.gif)
 
 **Get the Timer Working**
 
@@ -873,29 +999,4 @@ The `didSet` property observer for `timeLeft` clamps the time between 0 and 10. 
 
 The only thing left to do in core gameplay is implementing the score!
 
-**Update the Score**
 
-The score implementation is pretty similar the timer. We'll complete the `scoreLabel` code connection. Then we'll set up an instance variable with a `didSet` property observer to track the score and update the `scoreLabel`. Finally, we'll increment `score` at the end of `stepTower`.
-
-Try and see if you can implement it on your own!
-
-> [solution]
-> Add the following to complete the code connection for `scoreLabel`:
->
->       var scoreLabel: CCLabelTTF!
->
-> Create a `score` instance variable with a `didSet` property observer to update `scoreLabel`:
->
->       var score: Int = 0 {
->           didSet {
->               scoreLabel.string = "\(score)"
->           }
->       }
->
-> Increment score at the end of `touchBegan`:
->
->       score++
-
-Congrats! You have completed the core gameplay for Sushi Neko, a Timberman clone! Continue onto part two to polish up the gameplay :)
-
-![](./Simulator_MVP.gif)
