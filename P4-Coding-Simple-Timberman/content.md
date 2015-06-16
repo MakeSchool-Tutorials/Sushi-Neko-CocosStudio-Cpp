@@ -684,48 +684,73 @@ Run the game. It should have randomized obstacles now!
 
 ![image](afterRandomization.png)
 
-**Move the Sushi Tower**
+Move the Sushi Tower
+====================
 
 Our next goal is to get the sushi tower to move downward with each of the player's taps. Once we get that working we'll be able to add in collision detection!
 
-Early we mentioned that we want the tower to cycle between the ten pieces we have already created. We want to create a `stepTower` method in the `MainScene` class that does the following:
+Early we mentioned that we want the tower to cycle between the ten pieces we have already created. 
 
-1. moves current piece to top of tower
-2. increase its `zOrder` by one
-3. randomize its obstacle
-4. moves `piecesNode` down by the content size of a piece
+To do this, you'll first need to create a new instance variable in `MainScene`. Call it `pieceIndex`. This will be an `int` that tracks which piece in the `pieces` vector is at the bottom of the tower.  Make sure you initialize it to `0` in `MainScene::init()`.
 
-We'll add more to the `stepTower` method later on but go ahead and give this version a shot. Remember that you have a `pieces` array. You'll probably want to also create a new index variable, `pieceIndex`, to track the index of the current piece in `pieces`.
+We want to create a `stepTower` method in the `MainScene` class that does the following:
+
+1. Grab a pointer to the `currentPiece` from the `pieces` array.
+2. Move `currentPiece` to top of tower
+3. Increase its *z-order* by one
+4. Randomize its obstacle
+5. Moves `piecesNode` down by the height of a piece
+6. Increment `pieceIndex`
+
+We'll add more to the `stepTower` method later on but go ahead and give this version a shot.
 
 > [info]
-> Do not rely on `piecesNode.children`. The order of this array is not guaranteed. It is currently optimized for drawing the contents to the screen but could change in the future.
+> Here's some tips: 
+> After you make the `pieceIndex` instance variable, you can access the current piece with `this->pieces.at(this->pieceIndex)`.
+> 
+> You will want to use the `Piece` method `getSpriteHeight()` as part of your calculations both for how much to move the `currentPiece` to get it to the top of the tower, and also for how much to move `piecesNode` down. Make sure that whenever you use `getSpriteHeight()` you divide the result by `2.0f` because we want the roll sprites be covering each other.
+> 
+> Z-order is a number representing the order that sprites should be drawn to the screen.  Objects with z-orders that are higher are drawn later, so they will cover up sprites with lower z-orders that have already been drawn. When manipulating the *z-order* of the `currentPiece`, use the `getLocalZOrder` and `setLocalZorder` methods.
+> 
+> While incrementing `pieceIndex`, remember that index values >= 10 will be out of bounds of the `pieces` vector.
 
 > [solution]
-> You should have added a method like this to the `MainScene` class:
+> You should have added a method that looks something like this to the `MainScene` class:
 >
->       func stepTower() {
->           var piece = pieces[pieceIndex]
+	void MainScene::stepTower()
+	{
+	    // get a reference to the lowest piece
+	    Piece* currentPiece = this->pieces.at(this->pieceIndex);
 >
->           var yDiff = piece.contentSize.height * 10
->           piece.position = ccpAdd(piece.position, CGPoint(x: 0, y: yDiff))
->
->           piece.zOrder = piece.zOrder + 1
->
->           pieceLastSide = piece.setObstacle(pieceLastSide)
->
->           piecesNode.position = ccpSub(piecesNode.position,
->                                        CGPoint(x: 0, y: piece.contentSize.height))
->
->           pieceIndex = (pieceIndex + 1) % 10
->       }
->
-> You might have noticed that `pieceIndex` hasn't be declared yet. Make sure to add the following near your other instance variables:
->
->       var pieceIndex: Int = 0
+	    // move the lowest piece to the top of the tower
+	    currentPiece->setPosition(currentPiece->getPosition() + Vec2(0.0f, currentPiece->getSpriteHeight() / 2.0f * 10.0f));
+>	    
+	    // set the zOrder of the piece so that it appears on top of the others
+	    currentPiece->setLocalZOrder(currentPiece->getLocalZOrder() + 1);
+>	    
+	    // set the side of the obstacle, based on the side of the obstacle of the piece right before this one
+	    currentPiece->setObstacleSide(this->getSideForObstacle(this->lastObstacleSide));
+	    this->lastObstacleSide = currentPiece->getObstacleSide();
+>	    
+	    // move pieceNode down so that the whole tower moves down
+	    this->pieceNode->setPosition(this->pieceNode->getPosition() + Vec2(0.0f, -1.0f * currentPiece->getSpriteHeight() / 2.0f));
+>	    
+	    // change the index referencing the lowest piece
+	    this->pieceIndex = (this->pieceIndex + 1) % 10;
+	}
+It's okay it's not exact, as long as it works the same way!
+
+Now, inside the `onTouchBegan` lambda expression in `MainScene::setupTouchHandling()`, right before `return true`, call `this->stepTower()` to use our newly created step tower method.
 
 Launch the game and play around a bit. You should have an infinitely looping tower of sushi with randomized obstacles!
 
-![](./Simulator_Random_Obstacles.gif)
+<!-- TODO: Uncomment when done editing P4
+
+<video>
+	<source src="https://s3.amazonaws.com/mgwu-misc/Sushi+Neko+Cpp/towerStep.mov" type="video/mp4">
+</video>
+
+-->
 
 **Detect Collisions and Trigger Game Over**
 
