@@ -14,12 +14,15 @@ Throughout this tutorial you will learn many concepts including how to:
 
 We'll start off by making a "discrete" version of Timberman. The core gameplay will be present but there will be no fancy animations.
 
-<!-- TODO: Update gif -->
-![](./Simulator_MVP.gif)
+<video>
+	<source src="https://s3.amazonaws.com/mgwu-misc/Sushi+Neko+Cpp/discreteFinished.mov" type="video/mp4">
+</video>
 
-After we finish this basic but playable version we will spend some time polishing up the game. We'll add in a title screen, game over popup and animations.
+After we finish this basic but playable version we will spend some time polishing up the game. We'll add in a title screen, a game over popup and some animations.
 
-<!--TODO: ADD GIF-->
+<video>
+	<source src="https://s3.amazonaws.com/mgwu-misc/Sushi+Neko+Cpp/finalFinished.mov" type="video/mp4">
+</video>
 
 The solution to this [tutorial is available on GitHub](https://github.com/MakeSchool/SushiNeko-Cpp):
 
