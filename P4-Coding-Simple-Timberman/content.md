@@ -525,7 +525,7 @@ Timberman is a fast-paced game, and we want it to be very responsive. So we're g
 > [info]
 > Notice that the code we write inside `onTouchBegan` isn't executed immediately - instead it's saved to be executed at a later date. This is a new feature in C++11 called a *lambda expression*, (also sometimes known as a *block*, *anonymous function* or *closure*). To learn more about them, check out [this article here](https://en.wikipedia.org/wiki/Anonymous_function#C.2B.2B_.28since_C.2B.2B11.29).
 
-Inside the `touchBegan` block, we convert the touch from the global coordinate system to the node space of the scene. The way we can tell if the touch was on the left side on the screen by comparing the x-value to see if it's less than half the content size.
+Inside the `onTouchBegan` block, we convert the touch from the global coordinate system to the node space of the scene. The way we can tell if the touch was on the left side on the screen by comparing the x-value to see if it's less than half the content size.
 
 You should now be able to move the character from one side to another and back:
 
@@ -930,32 +930,51 @@ Try running it!  Now when the cat collides with an obstacle, the next touch will
 
 The core gameplay is pretty close to completion. The only thing left is the timer and score!
 
-**Update the Score**
+Update the Score
+================
 
-The score implementation is pretty similar the timer. We'll complete the `scoreLabel` code connection. Then we'll set up an instance variable with a `didSet` property observer to track the score and update the `scoreLabel`. Finally, we'll increment `score` at the end of `stepTower`.
+The score label has been sitting in the middle of the screen this whole time, but we haven't yet began updating it.  Let's do that now.
 
-Try and see if you can implement it on your own!
+First, create a `private` instance variable for the scoreLabel in *MainScene.h*:
 
-> [solution]
-> Add the following to complete the code connection for `scoreLabel`:
->
->       var scoreLabel: CCLabelTTF!
->
-> Create a `score` instance variable with a `didSet` property observer to update `scoreLabel`:
->
->       var score: Int = 0 {
->           didSet {
->               scoreLabel.string = "\(score)"
->           }
->       }
->
-> Increment score at the end of `touchBegan`:
->
->       score++
+	cocos2d::ui::Text* scoreLabel;
+	
+The compiler will complain about this, fix it by importing the Cocos2d-x UI classes:
 
-Congrats! You have completed the core gameplay for Sushi Neko, a Timberman clone! Continue onto part two to polish up the gameplay :)
+	#include "ui/CocosGUI.h"
+	
+Also make a `private` instance variable that will keep track of what the score is:
 
-![](./Simulator_MVP.gif)
+	int score;
+	
+Now, in `MainScene::init()`, add the following:
+
+	this->scoreLabel = rootNode->getChildByName<cocos2d::ui::Text*>("scoreLabel");
+
+Now we'll implement a new method that will both update the `score` variable and the label displaying the score to the same time.  In *MainScene.h*, declare this `private` method:
+
+	void setScore(int score);
+	
+And implement the method in *MainScene.cpp*
+
+	void MainScene::setScore(int score)
+	{
+	    // update the score instance variable
+	    this->score = score;
+	    
+	    // update the score label
+	    this->scoreLabel->setString(std::to_string(this->score));
+	}
+	
+Now we should make sure `score` initializes to `0`. Instead of doing it in the `init()` method, let's do it in `resetGameState()`, because we'll want the score to reset to `0` at the start of every new game:
+
+	this->setScore(0);
+
+Now to ensure that `score` is initialized on first launch, add a call to `resetGameState()` at the end of `MainScene::init()` (but before the `return` statement!).
+
+The last thing to do is add a call to `setScore` in the `GameState::Playing` `case` of the `onTouchBegan` lambda expression.  It should increment the current score by `1` for every chop. Add it in there, but make sure it's after the `isGameOver()` checks, we don't want to award any points when the character collides with an obstacle!
+
+Run it! You should now see the score incrementing.
 
 **Get the Timer Working**
 
@@ -998,5 +1017,9 @@ The `didSet` property observer for `timeLeft` clamps the time between 0 and 10. 
 > It's safe to check if `timeLeft` is equal to zero since we clamped it in the `didSet` property observer.
 
 The only thing left to do in core gameplay is implementing the score!
+
+![](./Simulator_MVP.gif)
+
+Congrats! You have completed the core gameplay for Sushi Neko, a Timberman clone! Continue onto part two to polish up the gameplay :)
 
 
