@@ -529,13 +529,9 @@ Inside the `onTouchBegan` block, we convert the touch from the global coordinate
 
 You should now be able to move the character from one side to another and back:
 
-<!-- TODO: Uncomment when done editing P4
-
 <video>
 	<source src="https://s3.amazonaws.com/mgwu-misc/Sushi+Neko+Cpp/touchHandling.mov" type="video/mp4">
 </video>
-
--->
 
 Randomize Each Obstacle's Side
 ==============================
@@ -744,13 +740,9 @@ Now, inside the `onTouchBegan` lambda expression in `MainScene::setupTouchHandli
 
 Launch the game and play around a bit. You should have an infinitely looping tower of sushi with randomized obstacles!
 
-<!-- TODO: Uncomment when done editing P4
-
 <video>
 	<source src="https://s3.amazonaws.com/mgwu-misc/Sushi+Neko+Cpp/towerStep.mov" type="video/mp4">
 </video>
-
--->
 
 Detect Collisions and Trigger Game Over
 =======================================
@@ -1082,7 +1074,9 @@ In `onEnter()` after `this->setupTouchHandling()`, schedule an update like this:
     
 Now try running it!        
 
-![](./Simulator_MVP.gif)
+<video>
+	<source src="https://s3.amazonaws.com/mgwu-misc/Sushi+Neko+Cpp/discreteFinished.mov" type="video/mp4">
+</video>
 
 Congrats! You have completed the core gameplay for Sushi Neko, a Timberman clone! Continue on to the next part to polish up the gameplay :)
 
