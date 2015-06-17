@@ -976,50 +976,114 @@ The last thing to do is add a call to `setScore` in the `GameState::Playing` `ca
 
 Run it! You should now see the score incrementing.
 
-**Get the Timer Working**
+Get the Timer Working
+=====================
 
-In Timberman there is a timer constantly counting down. Every successful move adds a little bit of time. You'll trigger a game over for running out of time if you don't play fast enough.
+In Timberman there is a timer constantly counting down. Every successful move adds a little bit of time, but if you don't play fast enough, you run out of time and it's game over.
 
-We are going to use property observers to update the `scaleX` of our `lifeBar` and an `update()` loop to decrement it.
+We are going to create a new method to update the time left and the `scaleX` of our `timeBar` and we'll use an `update()` loop to decrement it.
 
-> [action]
-> First we need to complete the code connection for `lifeBar`. Add the following to `MainScene` near your instance variables:
->
->       var lifeBar: CCSprite!
->
-> We also want to create an instance variable to track time left and setup a property observer on it to change `scaleX` on `lifeBar` whenever it changes. Add the following near your other instance variables:
->
->       var timeLeft: Float = 5 {
->           didSet {
->               timeLeft = max(min(timeLeft, 10), 0)
->               lifeBar.scaleX = timeLeft / Float(10)
->           }
->       }
+First, create an instance variable of type `float` called `timeLeft` which will track how much time, in seconds, is left in the game.
 
-The `didSet` property observer for `timeLeft` clamps the time between 0 and 10. After that, it sets the `scaleX` of `lifeBar` as a percentage of time left divided by 10 (the maximum amount of buffer the player can build).
+While you're at it, make another instance variable of type `cocos2d::Sprite*` called `timeBar`. This is the actual sprite displaying the amount of time left.
 
-> [action]
-> Add the following to the end of `stepTower()`:
->
->       timeLeft = timeLeft + 0.25
->
-> And add an `update` loop to decrement `timeLeft` and trigger game over if the player runs out of time:
->
->       override func update(delta: CCTime) {
->           if gameOver { return }
->           timeLeft -= Float(delta)
->           if timeLeft == 0 {
->               triggerGameOver()
->           }
->       }
+Now we'll grab a reference to `timeBar` in `MainScene::init()`. Because it's actually a child of a different `Sprite`, we'll first have to grab a pointer to the parent, then we can assign our `timeBar` variable. So, next to where you assign the other instance variables from the Cocos Studio scene, add these lines:
+
+	auto lifeBG = rootNode->getChildByName("lifeBG");
+	this->timeBar = lifeBG->getChildByName<Sprite*>("lifeBar");
+	
+> [info]
+> 
+> The `auto` keyword is an interesting new addition to C++11. Instead of having to specify the type for the newly declare variable, the `auto` keyword allows the compiler to infer the type. It's a useful feature that can be easily abused - using `auto` too much can make code confusing and hard to read. But it's helpful in situations (like this one) in which it's not super important for people reading the code to understand what type the variable is. In this case, not much is being done with the variable, only one line of code uses it. In other cases, especially ones involving templating, variable types can become very long and complicated - they can be useful by keeping code from becoming cluttered in those cases. You can read more about auto [here](http://en.cppreference.com/w/cpp/language/auto).
+
+Now that we have both `timeLeft` and `timeBar`, we can code a new setter method called `setTimeLeft`. This method will take a `float` as a parameter - the amount of time left. Declare it in *MainScene.h*.  In Timberman, there is a cap of 10 seconds in the time bank. Also, `timeLeft` can't be less than `0.0f`. Using that information see if you can implement `setTimeLeft()`. Don't forget to use `setScaleX` to scale the `timeBar` so that it correctly shows how much time is left.
+
+> [solution]
+> 
+	void MainScene::setTimeLeft(float timeLeft)
+	{
+	    // clamp the time left timer to between 0 and 10 seconds
+	    this->timeLeft = clampf(timeLeft, 0.0f, 10.0f);
+>    
+	    // update the UI to reflect the correct time left
+	    this->timeBar->setScaleX(timeLeft / 10.0f);
+	}
+	
+In Timberman, there can't be more than 10 seconds saved in the bank, so the first thing we do is use `clampf` to clamp the value between `0.0f` and `10.0f`.  The "f" in `clampf` refers to the fact that it works on `float` values. Then we use `setScaleX()` to change the scale of the `timeBar`. If there's 5 seconds left, that's divided by 10, resulting in the `timeBar` being scaled to half of its original width.
+
+In `resetGameState()` set `timeLeft` to `5.0f`: five seconds. Make sure to use the new setter method you just created!
+
+Next, in the `onTouchBegan` lambda expression, next to where you increment the score with `setScore()`, add one quarter second for every chop with `setTimeLeft()`.
+
+When the game ends, we want the `timeBar` to clear out, so in `triggerGameOver()` use `setTimeLeft()` to set the the time left to `0.0f`.
+
+Now we're going to add an update loop to the game. Update loops are a very common feature in games - they allow you to execute certain sections of code right before each frame is rendered. That means that most of the time, this code will get executed 60 times per second. In most games, a large portion of the game logic will take place within the update loop. Timberman is actually a bit of an exception, because most of the game events happen when triggered by a touch.
+
+In *MainScene.h*, declare our `update` method like this:
+
+	void update(float dt) override;
+	
+We use the `override` keyword because we're overriding `update()` from a superclass. Now let's implement *update* in *MainScene.cpp*.
+
+	void MainScene::update(float dt)
+	{
+	    Layer::update(dt);
+	}
+	
+The first thing we do is call the superclass `update`; in most cases when overriding a method from a Cocos2d-x superclass, you will have to remember to call the superclass' implementation within your method.
 
 > [info]
-> It's safe to check if `timeLeft` is equal to zero since we clamped it in the `didSet` property observer.
+> 
+Let's talk a bit about `dt`. `dt` stands for *delta time*: it's the amount of time, in seconds, that has elapsed since the last time `update()` was called. It's important to consider `dt` in your games, because although we try, we may not always be able to achieve a consistent 60 frames per second. For this game we're going to use `dt` to decrement the `timeLeft` in the game. 
+>
+Consider if the game is rendering a consistent 60 frames per second (**FPS**). Then `dt` would be 1/60, one sixtieth of a second. If we subtract `dt` from `timeLeft` every `update()` then, after one second has elapsed, we will have subtracted 1/60 60 times. `timeLeft` will be one second smaller.
+>
+But consider if the game *isn't* rendering 60 frames per second. What if it's rendering 30 frames per second? If we *assume* it's running 60 frames per second, and subtract a fixed 1/60 instead of the value of `dt`, then we'll end up subtracting too little time by half. So then a user on an older device that's rendering 30 FPS will actually get twice as much time as the player on the new device. 
 
-The only thing left to do in core gameplay is implementing the score!
+Now it's your turn to add some functionality to `update()`. It should:
+
+1. Check if the game is in the `Playing` state
+2. If it is, decrement the time left by `dt`.
+3. Then check if `timeLeft <= 0.0f`
+4. If it is, end the game by calling `triggerGameOver()`.
+
+> [solution]
+> 
+> Your update should look like this:
+> 
+	void MainScene::update(float dt)
+	{
+	    // update is called before every new frame is rendered
+	    // dt is the amount of time elapsed (in seconds) between this update call and the previous one
+>
+	    // call the superclass method update
+	    Layer::update(dt);
+>	    
+	    if (this->gameState == GameState::Playing)
+	    {
+	        // if the game is being played
+>	        
+	        // reduce the timer by the amount of time elapsed
+	        this->setTimeLeft(timeLeft - dt);
+>	        
+	        // if the timer is less than or equal to 0, the game is over
+	        if (this->timeLeft <= 0.0f)
+	        {
+	            this->triggerGameOver();
+	        }
+	    }
+	}
+
+Run the game! You should notice that the `timeBar` increments with every click, but doesn't actually decrement like we expect. That's because we have to tell Cocos2d-x to call our `update()` method.
+
+In `onEnter()` after `this->setupTouchHandling()`, schedule an update like this:
+
+    this->scheduleUpdate();
+    
+Now try running it!        
 
 ![](./Simulator_MVP.gif)
 
-Congrats! You have completed the core gameplay for Sushi Neko, a Timberman clone! Continue onto part two to polish up the gameplay :)
+Congrats! You have completed the core gameplay for Sushi Neko, a Timberman clone! Continue on to the next part to polish up the gameplay :)
 
 
