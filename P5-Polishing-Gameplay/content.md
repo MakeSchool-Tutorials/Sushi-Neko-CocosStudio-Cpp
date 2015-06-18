@@ -3,72 +3,39 @@ title: "Adding a title screen"
 slug: title-screen
 ---     
 
-#Polishing the Gameplay
+Polishing the Gameplay
+======================
 
 Now it's time to start turning this into a fully polished game. In the next three steps we will:
 
-<!--#2 is awkwardly phrased-->
 1. Add a title screen
 2. Add a play button
-2. Add tap indicators (how to play)
-3. Animate the character with a sprite frame animation
-4. Animate the sushi pieces with a keyframe animation
-5. Add a game over screen with a score recap
+3. Add tap indicators
+4. Animate the character with a sprite frame animation
+5. Animate the sushi pieces with a keyframe animation
+6. Add a game over screen with a score recap
 
-##Getting started
-
-We will need two different animation timelines for our `MainScene`. One for the title screen and another for the tap indicators.
-
-#Adding a Title Screen
-
-##Effect nodes
-
-You'll see a fitting font in your asset pack but it doesn't quite match the pixelated theme of the game. We can fix this with an effect node.
-
-> [action]
-> Open up `MainScene.ccb` to get started. Drag in an effect node from the node library on the left.
-> 
-> Set the node's *content size* to `(100%, 100%)` and *position* to `(0, 0)`. Add a pixelate effect with a *value* of `3`.
-> 
-> ![]()
-
-Later you can experiment with other effects but this is what we liked best for the style of Sushi Neko.
+Adding a Title Screen
+=====================
 
 ##Adding a title
 
-Now let's build a title for our game. We didn't include an asset so we'll be using LabelTTF nodes.
+Now let's build a title for our game. Open *MainScene.csd* in your Cocos Studio project. 
 
 > [action]
-> Drag a basic node into the timeline as a child of the effect node you added last step. Set its:
 > 
-> - *content size* to `(100%, 225)`
+From *Assets/Images/resources-2x*, drag *title.png* on to the scene.
+Set its:
+> 
 > - *anchor point* to `(0.5, 1)`
 > - *position* to `(50%, 0)`
-> - *position reference corner* to `top left`
-> 
-> ![]()
-> 
-> Drag in two LabelTTF nodes as children of the node you just added. For the first LabelTTF, set its:
-> 
-> - *positon* to `(50%, 148)`
-> - *label text* to `Sushi`
-> - *font name* to `Game of Three.ttf`
-> - *font size* to `112`
-> - *draw color* to `white`
-> - *outline color* to `black`
-> - *outline width* to `8`
-> 
-> ![]()
-> 
-> For the second LabelTTF, set its:
-> 
-> - *positon* to `(50%, 70)`
-> - *label text* to `Neko`
-> - other font properties to match the previous label
+> - *visiblity* toggle to off
+
+You'll notice that not only did we set the title image way off the top of the screen, we also made it invisible. That's because we're about to add an animation that will drop it into view!
 
 ##Animating the title
 
-We want the title to drop in from the top to make the start of the game a bit more dynamic. First, let's setup our timeline.
+First, let's set up our timeline.
 
 > [action]
 > Edit the `DefaultTimeline` to be named `InitialLaunch`.
