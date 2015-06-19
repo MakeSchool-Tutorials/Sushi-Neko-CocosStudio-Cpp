@@ -247,27 +247,127 @@ This ensures that `runChopAnimation()` is only called if a valid move has been m
 Trigger the Flying Sushi
 ========================
 
-Let's create a helper method to call whenever a sushi piece is successful hit.
+Let's create a method to call whenever a sushi piece is successful hit. This method will be responsible for creating a dummy piece that we'll use to animate in the direction it was hit. Remember, the real piece is actually swapped to the top of the tower!
+
+Before we can create that method, however, we must first create a new instance variable of type `cocos2d::Vec2`called `flyingPiecePosition`. This variable will hold the position on the screen where the base sushi piece is, so that we can put the dummy piece there before we animate it.
 
 > [action]
-> Add the following method to `MainScene`:
 > 
->       func addHitPiece(obstacleSide: Side) {
->           var flyingPiece: Piece = CCBReader.load("Piece") as! Piece
->           flyingPiece.position = piecesNode.positionInPoints
+> Declare `cocos2d::Vec2 flyingPiecePosition;` in *MainScene.h*.
+> 
+> Then open *MainScene.cpp*. In the `onEnter()` method, add this line:
+> 
+	this->flyingPiecePosition = this->pieceNode->getPosition();
+	
+Now we can use that position for animating sushi pieces.
+
+Lets create a method called `animateHitPiece`: it will take one parameter - the side the obstacle should be on for the dummy piece. We need that because the illusion would be ruined if the obstacle on the hit piece suddenly disappeared as it started flying away.
+
+> [action]
+> 
+> In *MainScene.h*, declare the method:
+> 
+	void animateHitPiece(Side obstacleSide);
 >
->           var animationName = character.side == .Left ? "FromLeft" : "FromRight"
->           flyingPiece.animationManager.runAnimationsForSequenceNamed(animationName)
->           flyingPiece.side = obstacleSide
+> Then, in *MainScene.cpp*, implement `animateHitPiece`. It should do the following:
 > 
->           self.addChild(flyingPiece)
->       }
+> 1. Create a new piece called `flyingPiece`
+> 2. Set the obstacle on the correct side
+> 3. Set the position of the `flyingPiece` so that it looks like it's flying from the correct place
+> 4. Add `flyingPiece` to the scene
+> 5. Create a new `ActionTimeline` from `"Piece.csb" called `pieceTimeline`
+> 6. Figure out, based on the `Side` the `character` is on, whether or not the piece should fly to the right or left
+> 7. Have `flyingPiece` run `pieceTimeline`
+> 8. Tell the `pieceTimeline` to play the correct animation
+> 
+> That's a lot of stuff! Try your hardest, this is all stuff that you have done before in some form or another. You will learn more if you try to code it yourself before looking at the solution.
 
-This method loads in a new piece, runs the correct animation, and adds it to the scene. Now we just need to trigger it appropriately.
+> [solution]
+> 
+> It should look something like this:
+>
+	void MainScene::animateHitPiece(Side obstacleSide)
+	{
+	    // load a new piece from CSLoader
+	    Piece* flyingPiece = dynamic_cast<Piece*>(CSLoader::createNode("Piece.csb"));
+>	    
+	    // make sure the flying piece obstacle matches the correct side of the real one
+	    flyingPiece->setObstacleSide(obstacleSide);
+>	    
+	    // set the position and add it to the scene
+	    flyingPiece->setPosition(this->flyingPiecePosition);
+	    this->addChild(flyingPiece);
+>	    
+	    // load the piece's animation timeline
+	    cocostudio::timeline::ActionTimeline* pieceTimeline = CSLoader::createTimeline("Piece.csb");
+>	    
+	    // get the side the character is on
+	    Side characterSide = this->character->getSide();
+>	    
+	    // if the character is on the left, animate the piece to the right and vice-versa
+	    std::string animationName = (characterSide == Side::Left) ? std::string("moveRight") : std::string("moveLeft");
+>	    
+	    // run the action so the timeline gets update ticks
+	    flyingPiece->runAction(pieceTimeline);
+>	    
+	    // tell the timeline to play the animation
+	    pieceTimeline->play(animationName, false);
+	}
+	
+There is a problem with our code. It works, but will cause performance issues the longer the game runs. Can you think of why that is?
+
+> [solution]
+> 
+We create and add a piece for every chop, but we never remove them from the scene! Even though they're off-screen, we could potentially have hundreds of pieces floating around.
 
 > [action]
-> After `var piece = pieces[pieceIndex]` in `stepTower` add:
 > 
->       addHitPiece(piece.side)
+We can fix that by adding this line to `animateHitPiece`:
+>
+	// on the last frame of the animation, remove the piece from the scene
+	pieceTimeline->setLastFrameCallFunc([flyingPiece]() {
+		flyingPiece->removeFromParent();
+	});
 
-Run the game to check out all your fancy animations!
+This uses another lamda expression, just like `onTouchBegan`. It makes sure that, on the last frame of the animation, the `flyingPiece` is removed from the scene.
+
+
+So now this should work nicely, and we just need to trigger it appropriately.
+
+> [action]
+> After `Piece* currentPiece = this->pieces.at(this->pieceIndex);` add:
+> 
+    this->animateHitPiece(currentPiece->getObstacleSide());
+
+Try running it! You should see flying sushi everywhere!
+
+<video width="100%" controls>
+	<source src="https://s3.amazonaws.com/mgwu-misc/Sushi+Neko+Cpp/flyingSushi.mov" type="video/mp4">
+</video>
+
+
+Animate the Tower Down
+======================
+
+It looks good, but it would look better if the tower animated down after every chop, instead of instantly moving down. Thankfully, this is an easy fix.
+
+> [action]
+> 
+> In `stepTower()` replace the line that sets `pieceNode`'s position:
+> 
+	this->pieceNode->setPosition(this->pieceNode->getPosition() + Vec2(0.0f, -1.0f * currentPiece->getSpriteHeight() / 2.0f));
+>
+With these lines:
+>
+	cocos2d::MoveBy* moveAction = cocos2d::MoveBy::create(0.15f, Vec2(0.0f, -1.0f * currentPiece->getSpriteHeight() / 2.0f));
+	this->pieceNode->runAction(moveAction);
+	
+You'll notice that the code to calculate the position is the same. However, instead of setting the position right away with `setPosition()`, we instead create a `MoveBy` action and have the `pieceNode` run that action.
+
+Try it out! It should look like this:
+
+<video width="100%" controls>
+	<source src="https://s3.amazonaws.com/mgwu-misc/Sushi+Neko+Cpp/towerFalling.mov" type="video/mp4">
+</video>
+
+With that we're nearly finished! We just have to add a game over screen and we'll be done.
