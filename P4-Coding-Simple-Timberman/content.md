@@ -498,7 +498,9 @@ Try it yourself first before checking the solution:
 	    this->side = side;
 	}
 
+
 Okay, so the `Character` class has an instance variable that represents what side the character is on. But it doesn't actually move the `Character` on the screen! We'll be relying on a little trick to make this easy - setting the `scaleX` to *-1.0f* flips a sprite horizontally around its anchor point. Since `Character` already has an anchor point at the center of the screen, we can us this trick to flip it to the other side.
+
 
 > [action]
 > 
@@ -725,6 +727,8 @@ Why use a `switch` statement, when we can use `if else`?
 >	
 	}
 It's a little bit more ugly, but it's actually also less performant.  Switch statements can jump straight to the correct code branch based on the value being switched on, whereas if / else statements have to evaluate through the various possible conditions until finding the correct one.
+
+=
 
 > [action]
 > 

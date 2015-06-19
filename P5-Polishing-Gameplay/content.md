@@ -376,10 +376,11 @@ Now try running it. It works, but it's not quite apparent that we're even in the
 > 
 We can fix that by modifying `triggerReady()` to make the sprites have full opacity again. See if you can figure out how to do it.
 
-> It should look like this:
+=
 
 > [solution]
 > 
+> It should look like this:
     // get a reference to the top-most node
     auto scene = this->getChildByName("Scene");
 >    
