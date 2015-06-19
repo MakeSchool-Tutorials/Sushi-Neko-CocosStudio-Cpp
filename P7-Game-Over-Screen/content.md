@@ -3,127 +3,94 @@ title: "Finishing up the game"
 slug: game-over-screen
 ---     
 
-#Designing the Game Over Popup
+Designing the Game Over Dropdown
+=============================
 
-The last thing left to do is create a game over popup. This will help tie the whole game together.
+The last thing left to do is create a game over dropdown. Like a nice rug in a room, this will help tie the whole game together.
 
 ##Laying it out
 
-We'll want to create a new CCB for our game over screen. This will make it a easy to create an independent animation.
+In Cocos Studio, open *MainScene.csd*. 
 
 > [action]
-> Create a new `node` file in SpriteBuilder named `GameOver`. Set its root node's *content size* to `(320, 480)`. Set its *custom class* to `GameOver`.
-
-Now let's get our resources into this new CCB.
+> First, make sure that *automatic frame recording* is off. Drag *mat.png* on to the scene. Set its *name* to mat. Set the *anchor point* to (0.5, 1.0). For now, so we can see it, set its position to (50%, 100%).
 
 > [action]
-> Drag `mat.png` into `GameOver.ccb`. Set its *position* to `(50%, 50%)` with a *position reference corner* of `top left`
-> 
-> Drag in an effect node as a child of `mat`. Set the node's *content size* to `(100%, 100%)` and *position* to `(0, 0)`. Add a pixelate effect with a *value* of `3`.
-> 
-> Drag in two LabelTTFs as children of the effect node. For the first label, set its:
-> 
-> - *positon* to `(50%, 483)`
-> - *label text* to `Game`
-> - *font name* to `Game of Three.ttf`
-> - *font size* to `92`
-> - *draw color* to `white`
-> - *outline color* to `black`
-> - *outline width* to `6`
-> 
-> For the second LabelTTF, set its:
-> 
-> - *positon* to `(50%, 415)`
-> - *label text* to `Over`
-> - other font properties to match the previous label
-> 
-> Drag two more LabelTTFs in as children of the effect node. For the first, set its:
-> 
-> - *positon* to `(50%, 299)`
-> - *label text* to `Score`
-> - *font name* to `Game of Three.ttf`
-> - *font size* to `42`
-> - *draw color* to `white`
-> - *outline color* to `black`
-> - *outline width* to `5`
-> 
-> For the second LabelTTF, set its:
-> 
-> - *positon* to `(50%, 249)`
-> - *label text* to `0`
-> - *font name* to `Game of Three.ttf`
-> - *font size* to `64`
-> - *draw color* to `white`
-> - *outline color* to `black`
-> - *outline width* to `5`
-> - `doc root var` code connection to `scoreLabel`
-> 
-> Drag in a button as a child of the root node. Set its:
-> 
-> - *position* to `(50%, 42)`
-> - *preferred size* to `(101, 63)`
-> - *sprite frame* to `button.png` for ALL states
-> - *selector* to `restart` with a *target* of `owner`
+Next, drag *gameOver.png* on to the scene. Make it a child of mat by dragging the sprite in the timeline on top of mat. Set the:
+- *anchor point* to (0.5, 1.0)
+- *position* to (50%, 90%)
 
-> [info]
-> Setting the *target* to `owner` allows you to call selectors on a class that is different than of the root node's class. You set the owner when you load in the CCB from code.
+> [action]
+> 
+Now, from the *Widgets* panel, drag two labels (*not* BitmapLabel!). *Name* one gameOverScore, and the other gameOverScoreLabel. Make them both children of mat also.
+
+> [action]
+> 
+For gameOverScore, set:
+- *position* to (50%, 52%)
+- *Text* to score
+- *Font Size* to 100
+- *Font File* to Game of Three.ttf
+
+> [action]
+> 
+For gameOverScoreLabel, set:
+- *position* to (50%, 44%)
+- *Text* to 0
+- *Font Size* to 100
+- *Font File* to Game of Three.ttf
+
+Now drag *button.png* on to the scene. *Name* it play. Set its *position* to (50%, 8.75%).
 
 ##Drop down animation
 
-Now its time to setup our down down animation.
+Now its time to set up our down down animation.
 
 > [action]
-> Create position keyframes on the `mat` at `00:00:00` and `00:00:10`. Change the first keyframe's *value* to `(50%, -50%)`. Add `Ease Out` interpolation to the animation.
+> With *automatic frame recording* enabled, move the scrubber to frame 0. Uncheck *visibility* for both mat and play.
+> 
+> Now add a new animation called gameOver. It should start on frame 121, and end on frame 151.
+> 
+> Move the scrubber to frame 121. Re-enable *visibility* for both mat and play. Set the *position* of mat to (50%, 200%). It should be off the screen.
+> 
+> Now, on frame 150, set the *position* of mat to (50%, 100%).
+> 
+> Go back to frame 121 and click the mat keyframe. Set the *animation curve* to Circ_EaseOut.
 
-Finally, we want the game over popup to animate correctly on all screen sizes so we'll have to change the root node's *content size*. We waited until the end because the animation will no longer preview correctly in SpriteBuilder once we do this.
+Try playing it! We have a nice animation.
 
 > [action]
-> Change the root node's *content size* to `(100%, 100%)`.
-
-The content size will now be inherited from its parent. This will be the full screen size once we load it in from code.
-
-#Coding the Game Over Popup
-
-##Triggering the popup
-First we'll need to create a GameOver class. 
-
-> [action]
-> Create a new swift file named `GameOver`.
 > 
-> Add the following code:
-> 
->       class GameOver: CCNode {
->           var scoreLabel: CCLabelTTF!
->           var score: Int = 0 {
->               didSet {
->                   scoreLabel.string = "\(score)"
->               }
->           }
-> 
->           var restartButton: CCButton!
-> 
->           func didLoadFromCCB() {
->               restartButton.cascadeOpacityEnabled = true
->               restartButton.runAction(CCActionFadeIn(duration: 0.3))
->           }
->       }
+Don't forget to **save and publish** before moving on.
 
-This code sets up the code connections we added in SpriteBuilder. It also creates a score property that we will be able to set from `MainScene` to update the `scoreLabel`. We also fade in the `restartButton` for a bit of an added effect. Again, we would do this from SpriteBuilder if it was possible.
+Coding the Game Over Dropdown
+==========================
 
-> [action]
-> Open `MainScene.swift`.
-> 
-> Change `triggerGameOver` to:
-> 
->       func triggerGameOver() {
->           gameState = .GameOver
->
->           var gameOverScreen: GameOver = CCBReader.load("GameOver", owner: self) as! GameOver
->           gameOverScreen.score = score
->           self.addChild(gameOverScreen)
->       }
+##Triggering the dropdown
+Thankfully, triggering the game over animation is as easy as adding some lines of code to the end of `triggerGameOver()`.
 
-> [info]
-> The restart button will trigger `restart()` in `MainScene` since we set its owner as `self`.
+Add the following:
+
+    // get a reference to the top-most node
+    auto scene = this->getChildByName("Scene");
+    
+    // get a reference to tha mat sprite
+    auto mat = scene->getChildByName("mat");
+    
+    // get a reference to the game over score label
+    cocos2d::ui::Text* gameOverScoreLabel = mat->getChildByName<cocos2d::ui::Text*>("gameOverScoreLabel");
+    
+    // set the score label to the user's score
+    gameOverScoreLabel->setString(std::to_string(this->score));
+    
+    // load and run the game over animations
+    cocostudio::timeline::ActionTimeline* gameOverTimeline = CSLoader::createTimeline("MainScene.csb");
+    this->stopAllActions();
+    this->runAction(gameOverTimeline);
+    gameOverTimeline->play("gameOver", false);
 
 Congrats! You have finished a fully polished clone of Timberman!
+
+<video width="100%" controls>
+	<source src="https://s3.amazonaws.com/mgwu-misc/Sushi+Neko+Cpp/finalGameOver.mov" type="video/mp4">
+</video>
