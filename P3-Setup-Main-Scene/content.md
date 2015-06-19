@@ -29,7 +29,6 @@ We are about to set up the necessary nodes for the sushi stack. First we'll add 
 > 
 Drag Piece.csd onto the scene. Set the *x-position* to 50% and the *y-position* to 292px.
 
-> [action]
 > 
 Drag in a *Node* from the *Objects Panel* on the left side of Cocos Studio.  Name it "pieceNode". Set its *x-position* to 50% and its *y-position* to 406px.  
 
@@ -66,7 +65,6 @@ Uncheck the *visible* box for now.
 > 
 Drag *life_bg.png* onto the scene. Name it "lifeBG". Set the *anchor point* to (0.5, 1.0) and its *position* to (50%, 98%). This will ensure it is centered and near the top of the screen on all devices.
 
-> [action]
 > 
 Drag *life.png* onto the scene and set it as a child of *life_bg*. Name it "lifeBar". This sprite will show the remaining time. Set its *anchor point* to (0, 0.5)  Set the *x-postion* to 17px and the *y-position* to 50%. This should center the red life bar on its background.
 

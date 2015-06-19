@@ -25,7 +25,6 @@ You just deleted the default background image, but note that you cannot delete t
 > 
 In the Resources Browser in the left panel, find *HelloWorld.png* and delete it - you don't need it anymore.
 
-> [action]
 > 
 Check to make sure that your design resolution (in the top-left hand corner) is set to *960 x 640*. This is the resolution at which we'll design the game in Cocos Studio.
 
@@ -52,7 +51,6 @@ Navigate in the resources browser to *Assets/Images/resources-2x/* and drag *cha
 > 
 Change the name of the dragged sprite to *Cat*.  It's a good idea in general to give custom names to all your objects in Cocos Studio, because later you can reference them in code by name.
 
-> [action]
 > 
 Set the *position* to (0, 0). Now set the *anchor point* to (1, 0) so that it is positioned relative to its bottom-right corner. We'll see how this makes things easier later, when we set up the *MainScene*.
 
@@ -67,7 +65,6 @@ Create an Obstacle Piece
 > 
 Create a *CSD-File* named *Piece* of type Node.
 
-> [action]
 > 
 Drag in *roll.png* from the *resources-2x* directory in the resources panel. Name it "roll". Also drag in two *chopstick.png* from the resources panel.  Make the chopsticks children of the roll by dragging the timeline text into the roll timeline text. Name one "rightChopstick" and the other "leftChopstick".
 
@@ -79,11 +76,9 @@ Your timeline should look like this:
 > 
 It's time to position our sprites correctly! Set the roll's *position* to (0, 0).
 
-> [action]
 > 
 Now lets move on to the left chopstick. Set its *anchor point* to (1.0, 0.5) and its *position* in relative percentage of parent container to (0, 40).
 
-> [action]
 > 
 Let's set up the right chopstick. Set its *anchor point* to (0, 0.5). Set the *position* (also as a *percentage*) to (100, 40). Finally, click the *flip horizontal* button. This allows us to use the same asset for both chopsticks and save a little bit of memory.
 

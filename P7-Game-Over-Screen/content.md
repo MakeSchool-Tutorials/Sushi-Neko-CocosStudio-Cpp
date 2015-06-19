@@ -14,21 +14,17 @@ The last thing left to do is create a game over dropdown. Like a nice rug in a r
 > 
 In Cocos Studio, open *MainScene.csd*. 
 
-> [action]
 > 
 > First, make sure that *automatic frame recording* is off. Drag *mat.png* on to the scene. Set its *name* to mat. Set the *anchor point* to (0.5, 1.0). For now, so we can see it, set its position to (50%, 100%).
-
-> [action]
+> 
 > 
 Next, drag *gameOver.png* on to the scene. Make it a child of mat by dragging the sprite in the timeline on top of mat. Set the:
 - *anchor point* to (0.5, 1.0)
 - *position* to (50%, 90%)
 
-> [action]
 > 
 Now, from the *Widgets* panel, drag two labels (*not* BitmapLabel!). *Name* one gameOverScore, and the other gameOverScoreLabel. Make them both children of mat also.
 
-> [action]
 > 
 For gameOverScore, set:
 - *position* to (50%, 52%)
@@ -36,7 +32,6 @@ For gameOverScore, set:
 - *Font Size* to 100
 - *Font File* to Game of Three.ttf
 
-> [action]
 > 
 For gameOverScoreLabel, set:
 - *position* to (50%, 44%)
@@ -44,7 +39,6 @@ For gameOverScoreLabel, set:
 - *Font Size* to 100
 - *Font File* to Game of Three.ttf
 
-> [action]
 > 
 Now drag *button.png* on to the scene. *Name* it play. Set its *position* to (50%, 8.75%).
 

@@ -18,15 +18,12 @@ First we're going to set up a default animation. That's basically just an animat
 > 
 > Create a new animation named `default` that starts and ends at frame 0.
 
-> [action]
 > 
 With the scrubber on frame 0, activate *automatic frame recording* and drag *character1.png* over to the *Image Resource* property on the right panel. Cocos Studio will create a keyframe for you.
 
-> [action]
 > 
 Now create a new animation called chop that starts on frame 1 and ends on frame 6.
 
-> [action]
 > 
 Move the scrubber to frame 1, and again drag *character1.png* to the *Image Resource* property. Do the same with the following frames and images:
 >
@@ -57,7 +54,6 @@ As a sushi roll is chopped by the cat, we want to have a nice animation of it fl
 > 
 > Open *Piece.csd*.
 
-> [action]
 > 
 > Create three new animation timelines:
 >
@@ -103,7 +99,6 @@ As a sushi roll is chopped by the cat, we want to have a nice animation of it fl
 > 
 Create a new keyframe for roll at frame 0 that sets its position to (0, 0).
 
-> [solution]
 > Don't forget to activate *automatic frame recording*!
 
 ##Animating moveRight
@@ -112,7 +107,6 @@ Create a new keyframe for roll at frame 0 that sets its position to (0, 0).
 > 
 Move the scrubber to frame 1. Set another roll keyframe at *position* (0, 0). Also at frame 1, set *rotation* to 0. Now, at frame 48, set the roll's position to (800, 200) and its rotation to 120.
 
-> [action]
 > 
 Finally, click the keyframe at frame 1 and set its *animation curve* to Sine_EaseOut.
 
@@ -124,7 +118,6 @@ The animation for moveLeft is the same as moveRight, but it should instead move 
 > 
 > Make the moveLeft animation.
 
-> [action]
 > 
 Once you're done making moveLeft, set the scrubber back to 0, before saving and publishing. The object will be created with whichever position the scrubber was last on.
 
@@ -156,17 +149,15 @@ The compiler will complain about not understanding what `ActionTimeline` is, so 
 >
 	#include "cocostudio/CocoStudio.h"
 
-> [action]
 > 
 Now flip over to *Character.cpp*. We're going to load the animation timeline in *init()*.
 
-> [action]
 > 
 > Add the standard skeleton method for overriding `init()`.
 
+It should look like this:
+
 > [solution]
-> 
-> It should look like this:
 > 
 	bool Character::init()
 	{
@@ -178,6 +169,8 @@ Now flip over to *Character.cpp*. We're going to load the animation timeline in 
 	    return true;
 	}
 	
+Time to create the `Character` animation timeline:
+
 > [action]
 > 
 Now, inside `init()`, before the `return true` statement, add the following:
@@ -225,9 +218,9 @@ Implement `onExit()` like this:
 	    Node::onExit();
 	}
 
-> [action]
-> 
-Now we can implement `runChopAnimation()`. When `runChopAnimation()` is called, it should run the `chop` animation that is part of `timeline`. See if you can implement it yourself!
+
+Now we can implement `runChopAnimation()`. When `runChopAnimation()` is called, it should run the `chop` animation that is part of `timeline`. 
+See if you can implement it yourself!
 
 > [solution]
 > 
@@ -293,9 +286,9 @@ Lets create a method called `animateHitPiece`: it will take one parameter - the 
 > 5. Create a new `ActionTimeline` from `"Piece.csb" called `pieceTimeline`
 > 6. Figure out, based on the `Side` the `character` is on, whether or not the piece should fly to the right or left
 > 7. Have `flyingPiece` run `pieceTimeline`
-> 8. Tell the `pieceTimeline` to play the correct animation
-> 
-> That's a lot of stuff! Try your hardest, this is all stuff that you have done before in some form or another. You will learn more if you try to code it yourself before looking at the solution.
+> 8. Tell the `pieceTimeline` to play the correct animation 
+
+That's a lot of stuff! Try your hardest, this is all stuff that you have done before in some form or another. You will learn more if you try to code it yourself before looking at the solution.
 
 > [solution]
 > 
@@ -335,9 +328,11 @@ There is a problem with our code. It works, but will cause performance issues th
 > 
 We create and add a piece for every chop, but we never remove them from the scene! Even though they're off-screen, we could potentially have hundreds of pieces floating around.
 
+Let's fix that.
+
 > [action]
 > 
-We can fix that by adding this line to `animateHitPiece`:
+We can fix it by adding this line to `animateHitPiece`:
 >
 	// on the last frame of the animation, remove the piece from the scene
 	pieceTimeline->setLastFrameCallFunc([flyingPiece]() {
@@ -345,7 +340,6 @@ We can fix that by adding this line to `animateHitPiece`:
 	});
 
 This uses another lamda expression, just like `onTouchBegan`. It makes sure that, on the last frame of the animation, the `flyingPiece` is removed from the scene.
-
 
 So now this should work nicely, and we just need to trigger it appropriately.
 

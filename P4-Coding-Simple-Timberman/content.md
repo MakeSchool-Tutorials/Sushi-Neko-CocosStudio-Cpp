@@ -119,11 +119,15 @@ Xcode may ask you if you want to take a snapshot before performing the operation
 >
 Now do the same thing, except replace all instances of *HelloWorld* with *MainScene*. 
 >
+
 ![image](replaceHelloWorld.png)
+
 
 > [info]
 > 
 Generally speaking, you should be very careful using replace all functionality in text editors - it's very easy to unintentionally replace something that you didn't intend to. It's a better practice to check each result individually and use the *Replace* button to replace one at a time, instead of doing all of them with *Replace All*. However, for the purposes of this tutorial, doing a *Replace All* was okay.
+
+Let's move on.
 
 > [action]
 > 
@@ -150,7 +154,6 @@ It looks like this:
 > 
 Now do the exact same steps for *Piece.csd* - set its custom class to Piece.
 
-> [action]
 > 
 **Save and publish the Cocos Studio project before moving on!**
 
@@ -175,7 +178,6 @@ Save it in your *Classes* folder. Check the box labeled SushiNeko Mac so that th
 >
 ![image](saveInClassesFolder.png)
 
-> [action]
 > 
 Define the `Character` class as a subclass of `Node` in *Character.h*.
 >
@@ -258,11 +260,12 @@ This is all boilerplate code required by Cocos2d-x to read Cocos Studio objects.
 > 
 > `createNodeWithFlatBuffers` is what's called by the Cocos2d-x code to create and initialize the object with the properties set in Cocos Studio. 
 
+Time to make `Piece and `PieceReader`:
+
 > [action]
 > 
 **Follow the same steps to create the `Piece` and `PieceReader` classes.**
 
-> [action]
 > 
 After you've done that, we have to tell Cocos2d-x where to find the reader classes.  Open *MainScene.cpp* and below these lines in `init`:
 >
@@ -377,7 +380,6 @@ Okay, now we can go back to *MainScene.cpp* to create our sushi tower.  Below wh
 >
 	}
 	
-> [action]
 > 
 Inside the loop, do the following.  Create a piece:
 >
@@ -389,7 +391,6 @@ Because `CSLoader::createNode()` returns a `Node`, we have to downcast it using 
 > 
 Next, create a `float` called `rollHeight` and assign the height of the roll using the `Piece` method that we just created.
 
-> [action]
 > 
 Use `rollHeight` to set the position of the roll like this:
 >
@@ -403,7 +404,9 @@ Next, add the `piece` to both the `pieceNode` and our `pieces` `Vector`.
 >
         this->pieceNode->addChild(piece);
         this->pieces.pushBack(piece);
-  
+        
+Some additional information about pointers to objects vs. objects.
+
 > [info]  
 >    
 > Note that instead of using the arrow syntax to add the piece to pieces, we use the dot syntax. That's because the pieces vector is declared as an object directly, not a pointer to an object. Look at the declaration in *MainScene.h*, it looks like this:
@@ -456,6 +459,8 @@ We will use these `enum` values to represent what side both the `Character` and 
 > 
 > Why not just use a `std::string` instead?  It's much slower to compare two `std::string` types, and they occupy more memory.  
 
+Now it's time to use the newly created `Side` enum in `Character`:
+
 > [action]
 > 
 Now, in *Character.h*, it's your job to declare a `protected` instance variable called `side` of type `Side` that represents which side of the screen the `Character` is on, and also public getter and setter methods to modify the value of `side`.
@@ -473,9 +478,13 @@ We'll use these methods from `MainScene` when we add in the touch handling.
 >
 	Side side;
 
+Don't forget to `#include "Constants.h"`.
+
 > [action]
 > 
-Don't forget to `#include "Constants.h"`. Now add in the implementations of the getter and setter methods in *Character.cpp*.
+ Now add in the implementations of the getter and setter methods in *Character.cpp*.
+
+Try it yourself first before checking the solution:
 
 > [solution]
 > 
@@ -536,7 +545,6 @@ Doing that tells the compiler that there's a `class` called `Character`, so that
 > [action]
 > 
 So flip to *MainScene.cpp* and `#include Character.h` there.	    
-> [action]
 > 
 We can grab the reference to the `Character` in the `init()` method. Right below where we intialized `this->pieceNode`, add this code:
 >
@@ -569,9 +577,10 @@ When overriding superclass methods, it's very important to remember to call the 
 > 
 Now it's your job to create a `protected` method called `setupTouchHandling()`. It takes no parameters and returns `void`.
 
-> [action]
 > 
 After you have declared `setupTouchHandling()` in *MainScene.h* and implemented an empty method in *MainScene.cpp*, call it from `onEnter()`.
+
+Here's what that looks like:
 
 > [solution]
 > 
@@ -582,9 +591,11 @@ After you have declared `setupTouchHandling()` in *MainScene.h* and implemented 
 	    this->setupTouchHandling();
 	}
 
+Now we shall fill in the contents of `setupTouchHandling()`.
+
 > [action]
 > 
-Now we shall fill in the contents of `setupTouchHandling()`. It should look like this:
+It should look like this:
 >
 	auto touchListener = EventListenerTouchOneByOne::create();
 >	    
@@ -632,7 +643,9 @@ Let's set up the `Piece` class. Just like how we created the `side` property in 
 
 > [action]
 > 
-Set up the instance variable, and the getter and setter methods - we'll talk about some additional functionality for the setter afterwards. Try to do this without looking at the solution code!
+Set up the instance variable, and the getter and setter methods - we'll talk about some additional functionality for the setter afterwards. 
+
+Try to do this without looking at the solution code!
 
 > [solution]
 > 
@@ -664,12 +677,16 @@ Now let's make it so that when the obstacle side is set, either the `Left`, `Rig
 > 
 First grab a reference to the `roll` sprite. Use that to get references to the `leftChopstick` and `rightChopstick`, which are both children of `roll`.
 
+See if you can do it yourself!
+
 > [solution]
 > 
     Sprite* roll = this->getChildByName<Sprite*>("roll");
 >
     Sprite* leftChopstick = roll->getChildByName<Sprite*>("leftChopstick");
     Sprite* rightChopstick = roll->getChildByName<Sprite*>("rightChopstick");
+
+Now let's set the visibility of the obstacles based on the side:
 
 > [action]   
 > 
@@ -689,6 +706,8 @@ Here's what the `switch` should look like for `setObstacleSide`:
 	     	break;
 	}
 	
+Why use a `switch` statement, when we can use `if else`?
+
 > [info]
 > 
 > The equivalent if statement would look like this:
@@ -724,7 +743,6 @@ To make sure our pieces follow these rules, we'll pass in the obstacle side of t
 > 
 First, declare an instance variable in *MainScene.h* of type `Side` called *lastObstacleSide*. Don't forget to `#include "Constants.h"`.
 
-> [action]
 > 
 In `MainScene::init()`, somewhere before we create the sushi tower, initialize `lastObstacleSide` to the value `Side::Left`. Now, inside the for loop that creates the tower, add the following two lines:
 >
@@ -738,6 +756,8 @@ The second line sets the newly created piece's obstacle side with the `Side` we 
 > [action]
 > 
 So time to implement `void getSideForObstacle(Side lastSide)`. Try to do it yourself!  Don't forget the four rules listed above. Here's a hint - you can use the `CCRANDOM_0_1()` macro to generate a random number between 0.0f and 1.0f.
+
+Try to implement it before checking your solution.
 
 > [solution]
 > 
@@ -814,9 +834,10 @@ We want to create a `stepTower` method in the `MainScene` class that does the fo
 > 
 We'll add more to the `stepTower` method later on but go ahead and give this version a shot.
 
+Here's some tips: 
+
 > [info]
 > 
-> Here's some tips: 
 > After you make the `pieceIndex` instance variable, you can access the current piece with `this->pieces.at(this->pieceIndex)`.
 > 
 > You will want to use the `Piece` method `getSpriteHeight()` as part of your calculations both for how much to move the `currentPiece` to get it to the top of the tower, and also for how much to move `piecesNode` down. Make sure that whenever you use `getSpriteHeight()` you divide the result by `2.0f` because we want the roll sprites be covering each other.
@@ -825,9 +846,10 @@ We'll add more to the `stepTower` method later on but go ahead and give this ver
 > 
 > While incrementing `pieceIndex`, remember that index values >= 10 will be out of bounds of the `pieces` vector.
 
+You should have added a method that looks something like this to the `MainScene` class:
+
 > [solution]
 > 
-> You should have added a method that looks something like this to the `MainScene` class:
 >
 	void MainScene::stepTower()
 	{
@@ -850,6 +872,7 @@ We'll add more to the `stepTower` method later on but go ahead and give this ver
 	    // change the index referencing the lowest piece
 	    this->pieceIndex = (this->pieceIndex + 1) % 10;
 	}
+	
 It's okay it's not exact, as long as it works the same way!
 
 > [action]
@@ -872,6 +895,8 @@ First, code `isGameOver()`. It should return a `bool` indicating whether or not 
 > [action]
 > 
 In *MainScene.h* declare `bool isGameOver()` as a `private` method. Then implement it!  If the obstacle on the current piece is on the same side as the `character`, it should return `true`, otherwise `false`. You can access the current piece the same way you did in `stepTower()`.
+
+Here's the solution:
 
 > [solution]
 > 
@@ -909,7 +934,6 @@ Then declare a `private` instance variable that will hold the state of our game:
 >	
 Our game starts out able to play right away, so in `MainScene::init()` set `gameState` to `GameState::Playing`.
 
-> [action]
 > 
 Now make the `triggerGameOver()` method. The first version is going to be very simple:
 >
@@ -962,13 +986,13 @@ Right at the top of `onTouchBegan`, add a `switch` statement on `gameState` with
 	   		break;
 	}
 
-> [action]
 > 
 Inside the braces of the `GameState::Playing` case, paste your existing touch handling code, starting with `Vec2 touchLocation =`... and ending right before the last `return true`.  
 
+Your whole `setupTouchHandling` method should now look like this:
+
 > [solution]
 > 
-> Your whole `setupTouchHandling` method should now look like this:
 > 
 	void MainScene::setupTouchHandling()
 	{
@@ -1020,6 +1044,8 @@ Inside the braces of the `GameState::Playing` case, paste your existing touch ha
 	    this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(touchListener, this);
 	}
 
+Now we'll code two new methods.
+
 > [action]
 > 
 Inside of `case GameState::GameOver` add the following two method calls:
@@ -1038,6 +1064,8 @@ For now `resetGameState()` is pretty simple - it just makes sure that the lowest
 > 
 Try to code it yourself! Grab the `currentPiece` the way we have before, and set the `obstacleSide` to `Side::None`.
 
+Here's what that should look like:
+
 > [solution]
 > 
 	void MainScene::resetGameState()
@@ -1047,9 +1075,13 @@ Try to code it yourself! Grab the `currentPiece` the way we have before, and set
 	    currentPiece->setObstacleSide(Side::None);
 	}
 
+Now let's write `triggerPlaying()`.
+
 > [action]
 > 
-Now let's write `triggerPlaying()`. For now, it looks exactly like `triggerGameOver()` except it sets the `gameState` to `GameState::Playing`.
+For now, it looks exactly like `triggerGameOver()` except it sets the `gameState` to `GameState::Playing`. Code it up!
+
+Here's the result:
 
 > [solution]
 > 
@@ -1111,12 +1143,9 @@ Now we should make sure `score` initializes to `0`.
 Instead of doing it in the `init()` method, let's do it in `resetGameState()`, because we'll want the score to reset to `0` at the start of every new game:
 >
 	this->setScore(0);
-
-> [action]
 > 
 Now to ensure that `score` is initialized on first launch, add a call to `resetGameState()` at the end of `MainScene::init()` (but before the `return` statement!).
 
-> [action]
 > 
 The last thing to do is add a call to `setScore` in the `GameState::Playing` `case` of the `onTouchBegan` lambda expression.  It should increment the current score by `1` for every chop. Add it in there, but make sure it's after the `isGameOver()` checks, we don't want to award any points when the character collides with an obstacle!
 
@@ -1144,13 +1173,19 @@ So, next to where you assign the other instance variables from the Cocos Studio 
 	auto lifeBG = rootNode->getChildByName("lifeBG");
 	this->timeBar = lifeBG->getChildByName<Sprite*>("lifeBar");
 	
+What's with the `auto` keyword? Read ahead if you're interested.
+	
 > [info]
 > 
 > The `auto` keyword is an interesting new addition to C++11. Instead of having to specify the type for the newly declare variable, the `auto` keyword allows the compiler to infer the type. It's a useful feature that can be easily abused - using `auto` too much can make code confusing and hard to read. But it's helpful in situations (like this one) in which it's not super important for people reading the code to understand what type the variable is. In this case, not much is being done with the variable, only one line of code uses it. In other cases, especially ones involving templating, variable types can become very long and complicated - they can be useful by keeping code from becoming cluttered in those cases. You can read more about auto [here](http://en.cppreference.com/w/cpp/language/auto).
 
+Now that we have both `timeLeft` and `timeBar`, we can code a new setter method called `setTimeLeft`. This method will take a `float` as a parameter - the amount of time left. 
+
 > [action]
 > 
-Now that we have both `timeLeft` and `timeBar`, we can code a new setter method called `setTimeLeft`. This method will take a `float` as a parameter - the amount of time left. Declare it in *MainScene.h*.  In Timberman, there is a cap of 10 seconds in the time bank. Also, `timeLeft` can't be less than `0.0f`. Using that information see if you can implement `setTimeLeft()`. Don't forget to use `setScaleX` to scale the `timeBar` so that it correctly shows how much time is left.
+Declare it in *MainScene.h*.  In Timberman, there is a cap of 10 seconds in the time bank. Also, `timeLeft` can't be less than `0.0f`. Using that information see if you can implement `setTimeLeft()`. Don't forget to use `setScaleX` to scale the `timeBar` so that it correctly shows how much time is left.
+
+Here's how to make `setTimeLeft`.
 
 > [solution]
 > 
@@ -1169,11 +1204,9 @@ In Timberman, there can't be more than 10 seconds saved in the bank, so the firs
 > 
 In `resetGameState()` set `timeLeft` to `5.0f`: five seconds. Make sure to use the new setter method you just created!
 
-> [action]
 > 
 Next, in the `onTouchBegan` lambda expression, next to where you increment the score with `setScore()`, add one quarter second for every chop with `setTimeLeft()`.
 
-> [action]
 > 
 When the game ends, we want the `timeBar` to clear out, so in `triggerGameOver()` use `setTimeLeft()` to set the the time left to `0.0f`.
 
@@ -1185,7 +1218,6 @@ In *MainScene.h*, declare our `update` method like this:
 >
 	void update(float dt) override;
 
-> [action]
 > 	
 We use the `override` keyword because we're overriding `update()` from a superclass. Now let's implement *update* in *MainScene.cpp*.
 >
@@ -1204,6 +1236,8 @@ Consider if the game is rendering a consistent 60 frames per second (**FPS**). T
 >
 But consider if the game *isn't* rendering 60 frames per second. What if it's rendering 30 frames per second? If we *assume* it's running 60 frames per second, and subtract a fixed 1/60 instead of the value of `dt`, then we'll end up subtracting too little time by half. So then a user on an older device that's rendering 30 FPS will actually get twice as much time as the player on the new device. 
 
+Now that we know about the importance of `dt`, time to code our own `update()` method:
+
 > [action]
 > 
 Now it's your turn to add some functionality to `update()`. It should:
@@ -1212,6 +1246,8 @@ Now it's your turn to add some functionality to `update()`. It should:
 2. If it is, decrement the time left by `dt`.
 3. Then check if `timeLeft <= 0.0f`
 4. If it is, end the game by calling `triggerGameOver()`.
+
+Try coding it!
 
 > [solution]
 > 

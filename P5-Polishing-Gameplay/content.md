@@ -23,7 +23,6 @@ Now let's build a title for our game.
 > 
 Open *MainScene.csd* in your Cocos Studio project. 
 
-> [action]
 > 
 From *Assets/Images/resources-2x*, drag *title.png* on to the scene.
 Set its:
@@ -44,7 +43,6 @@ Click the *add animation* button to make one. It's the button highlighted in blu
 >
 ![image](addAnimation.png)
 
-> [action]
 > 
 In the dialog box that pops up, set the:
 >
@@ -78,7 +76,6 @@ You should see the title appear at the top of the screen, and you should also se
 > 
 Now drag the scrubber over to frame 50. Set the title sprite position to (50%, 80%).
 
-> [action]
 > 
 Now drag the scrubber back to frame 1, and set the title sprite position to (50%, 140%).
 
@@ -92,9 +89,11 @@ The animation will loop, which can sometimes be annoying. To disable looping, cl
 > 
 > Despite the fact that we only defined the position of the title sprite for frames 1 and 50, we still get continuous motion and movement for each frame between. The animation is automatically interpolated for us, a process often called *tweening*. This is a very powerful property of key frame animation - sophisticated results can be achieved with relatively little work.
 
+Let's make scoreLabel and lifeBG less distracting during the title sequence.
+
 > [action]
 > 
-Set the scrubber to frame 1, and toggle the *visibility* to off for both the scoreLabel and lifeBG. This way they aren't distracting from the animating title.
+Set the scrubber to frame 1, and toggle the *visibility* to off for both the scoreLabel and lifeBG. 
 
 This is what your animation should look like:
 
@@ -136,15 +135,12 @@ We need to get our tap sprites on the screen before we can animate them.
 > 
 Make sure to **uncheck** *Automatic frame recording* before doing the following:
 
-> [action] 
 > 
 > Drag *tap_left.png* in to the scene. Change the following properties:
 > 
 > - *Name* to tapLeft.
 > - *Anchor Point* to (0.0, 0.5)
 > - *Position* to (10%, 8.75%)
-
-> [action] 
 > 
 > Drag *tap_right.png* in to the scene. Change the following properties:
 > 
@@ -174,30 +170,25 @@ If you run the *title* animation again, you shall see that now the tap sprites a
 > 
 Move the scrubber to frame 61. Uncheck the visibility for the title sprite, so that it becomes invivisble at the start of the ready animation.
 
-> [action]
 > 
 Also make tapLeft, tapRight and lifeBG become visible at frame 61.
 
 Let's get started with our animation. We want the tap buttons to move back and forth from left to right so they catch the player's attention.
 
-> [action]
 > 
 Move the scrubber to frame 90. Change the position of tapLeft to (0%, 8.75%) and tapRight to (100%, 8.75%).
 
 Because of the way Cocos Studio works, that will actually have changed the position of the tapLeft and tapRight sprites for all frames. 
 
-> [action]
 > 
 To fix that, move the scrubber back to frame 61, and change the positions for tapLeft and tapRight back to what they were:
 >
 tapLeft - (10%, 8.75%)
 tapRight - (90%, 8.75%)
 
-> [action]
 > 
 Move the scrubber to frame 120 and set tapLeft and tapRight to the exact same positions as in frame 61.
 
-> [action]
 > 
 In the animation dropdown, set the active animation to ready.
 >
@@ -300,11 +291,9 @@ In the `switch` statement in `MainScene::setupTouchHandling()`, add the followin
 		this->triggerReady();
 	   break;
 
-> [action]
 > 
 Now let's code the `triggerReady()` method. Declare it in *MainScene.h* and create the empty method in *MainScene.cpp*. Just like in the other trigger methods, assign `gameState` to the correct state, in this case `GameState::Ready`.
 
-> [action]
 > 
 Create and load an `ActionTimeline` the exact same way we did in `triggerTitle()`, except change the name `titleTimeline` to `readyTimeline`. Add the same code to stop previous actions and run `readyTimeline`. Finally, tell `readyTimeline` to play the `"ready"` animation, except this time tell it to loop.
 
@@ -387,9 +376,9 @@ Now try running it. It works, but it's not quite apparent that we're even in the
 > 
 We can fix that by modifying `triggerReady()` to make the sprites have full opacity again. See if you can figure out how to do it.
 
-> [solution]
-> 
 > It should look like this:
+
+> [solution]
 > 
     // get a reference to the top-most node
     auto scene = this->getChildByName("Scene");
