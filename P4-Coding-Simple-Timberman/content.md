@@ -695,7 +695,7 @@ We want to create a `stepTower` method in the `MainScene` class that does the fo
 2. Move `currentPiece` to top of tower
 3. Increase its *z-order* by one
 4. Randomize its obstacle
-5. Moves `piecesNode` down by the height of a piece
+5. Move `piecesNode` down by the height of a piece
 6. Increment `pieceIndex`
 
 We'll add more to the `stepTower` method later on but go ahead and give this version a shot.
