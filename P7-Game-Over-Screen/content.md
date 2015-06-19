@@ -10,6 +10,7 @@ The last thing left to do is create a game over dropdown. Like a nice rug in a r
 
 ##Laying it out
 
+> [action]
 In Cocos Studio, open *MainScene.csd*. 
 
 > [action]
@@ -40,6 +41,7 @@ For gameOverScoreLabel, set:
 - *Font Size* to 100
 - *Font File* to Game of Three.ttf
 
+> [action]
 Now drag *button.png* on to the scene. *Name* it play. Set its *position* to (50%, 8.75%).
 
 ##Drop down animation
@@ -69,20 +71,21 @@ Coding the Game Over Dropdown
 ##Triggering the dropdown
 Thankfully, triggering the game over animation is as easy as adding some lines of code to the end of `triggerGameOver()`.
 
+> [action]
 Add the following:
-
+>
     // get a reference to the top-most node
     auto scene = this->getChildByName("Scene");
-    
+>   
     // get a reference to tha mat sprite
     auto mat = scene->getChildByName("mat");
-    
+>   
     // get a reference to the game over score label
     cocos2d::ui::Text* gameOverScoreLabel = mat->getChildByName<cocos2d::ui::Text*>("gameOverScoreLabel");
-    
+>   
     // set the score label to the user's score
     gameOverScoreLabel->setString(std::to_string(this->score));
-    
+>   
     // load and run the game over animations
     cocostudio::timeline::ActionTimeline* gameOverTimeline = CSLoader::createTimeline("MainScene.csb");
     this->stopAllActions();

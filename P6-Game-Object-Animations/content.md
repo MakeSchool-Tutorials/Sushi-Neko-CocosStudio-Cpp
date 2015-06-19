@@ -109,6 +109,7 @@ Create a new keyframe for roll at frame 0 that sets its position to (0, 0).
 > 
 Move the scrubber to frame 1. Set another roll keyframe at *position* (0, 0). Also at frame 1, set *rotation* to 0. Now, at frame 48, set the roll's position to (800, 200) and its rotation to 120.
 
+> [action]
 Finally, click the keyframe at frame 1 and set its *animation curve* to Sine_EaseOut.
 
 ##Animating moveLeft
@@ -118,6 +119,7 @@ The animation for moveLeft is the same as moveRight, but it should instead move 
 > [action]
 > Make the moveLeft animation.
 
+> [action]
 Once you're done making moveLeft, set the scrubber back to 0, before saving and publishing. The object will be created with whichever position the scrubber was last on.
 
 Triggering the Chopping In Code
@@ -146,6 +148,7 @@ The compiler will complain about not understanding what `ActionTimeline` is, so 
 >
 	#include "cocostudio/CocoStudio.h"
 
+> [action]
 Now flip over to *Character.cpp*. We're going to load the animation timeline in *init()*.
 
 > [action]

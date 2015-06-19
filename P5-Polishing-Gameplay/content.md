@@ -17,7 +17,10 @@ Adding a Title Screen
 
 ##Adding a title
 
-Now let's build a title for our game. Open *MainScene.csd* in your Cocos Studio project. 
+Now let's build a title for our game. 
+
+> [action]
+Open *MainScene.csd* in your Cocos Studio project. 
 
 > [action]
 > 
@@ -32,8 +35,11 @@ You'll notice that not only did we set the title image way off the top of the sc
 
 ##Animating the title
 
-First, let's set up our animation timeline. Click the *add animation* button to make one. It's the button highlighted in blue in the following image:
+First, let's set up our animation timeline. 
 
+> [action]
+Click the *add animation* button to make one. It's the button highlighted in blue in the following image:
+>
 ![image](addAnimation.png)
 
 > [action]
@@ -50,20 +56,24 @@ Now you will have a newly created animation timeline with an associated color. C
 
 ![image](titleTimeline.png)
 
+> [action]
 Check the *Automatic frame recording* checkbox.
 
 ![image](automaticFrameRecording.png)
 
 With *automatic frame recording* enabled, whenever you change an object's property in the properties panel on the right, it will change that property on the frame the scrub bar is on, as part of an animation.
 
+> [action]
 Drag the blue scrubber bar over to frame 1, and click the title sprite in the timeline. Check the *visibility* property.
 
 You should see the title appear at the top of the screen, and you should also see a new keyframe created at the interesection of the scrubber and the title timeline track. The keyframe is indicated as a small black rectange in the animation editor window.
 
 ![image](newKeyFrame.png)
 
+> [action]
 Now drag the scrubber over to frame 50. Set the title sprite position to (50%, 80%).
 
+> [action]
 Now drag the scrubber back to frame 1, and set the title sprite position to (50%, 140%).
 
 Try dragging the scrubber around - you will see the title sprite moving between the two positions set in frame 1 and frame 50. Try playing it by clicking the play button:
@@ -76,6 +86,7 @@ The animation will loop, which can sometimes be annoying. To disable looping, cl
 > 
 > Despite the fact that we only defined the position of the title sprite for frames 1 and 50, we still get continuous motion and movement for each frame between. The animation is automatically interpolated for us, a process often called *tweening*. This is a very powerful property of key frame animation - sophisticated results can be achieved with relatively little work.
 
+> [action]
 Set the scrubber to frame 1, and toggle the *visibility* to off for both the scoreLabel and lifeBG. This way they aren't distracting from the animating title.
 
 This is what your animation should look like:
@@ -84,7 +95,10 @@ This is what your animation should look like:
 	<source src="https://s3.amazonaws.com/mgwu-misc/Sushi+Neko+Cpp/titleLinear.mov" type="video/mp4">
 </video>
 
-The title animation looks good, but it could look better. Click keyframe 1 in the title row. Then, on the right, click the *Quad_EaseOut* curve
+The title animation looks good, but it could look better. 
+
+> [action]
+Click keyframe 1 in the title row. Then, on the right, click the *Quad_EaseOut* curve
 
 ![image](titleEaseOut.png)
 
@@ -110,6 +124,7 @@ After the title screen, we're going to have another game state - the *ready* sta
 
 We need to get our tap sprites on the screen before we can animate them.
 
+> [action]
 Make sure to **uncheck** *Automatic frame recording* before doing the following:
 
 > [action] 
@@ -128,6 +143,7 @@ Make sure to **uncheck** *Automatic frame recording* before doing the following:
  
 If you run the *title* animation again, you shall see that now the tap sprites are hanging out the bottom of the screen, distracting from the title. 
 
+> [action]
 **Check** *Automatic frame recording* again, and move the scrubber to frame 1. Toggle the *visiblity* of both tapLeft and tapRight to off, so that they are not visible during the title animation.
 
 ##Creating a New Animation
@@ -141,23 +157,31 @@ If you run the *title* animation again, you shall see that now the tap sprites a
 
 ##Animating the Indicators
 
+> [action]
 Move the scrubber to frame 61. Uncheck the visibility for the title sprite, so that it becomes invivisble at the start of the ready animation.
 
+> [action]
 Also make tapLeft, tapRight and lifeBG become visible at frame 61.
 
 Let's get started with our animation. We want the tap buttons to move back and forth from left to right so they catch the player's attention.
 
+> [action]
 Move the scrubber to frame 90. Change the position of tapLeft to (0%, 8.75%) and tapRight to (100%, 8.75%).
 
-Because of the way Cocos Studio works, that will actually have changed the position of the tapLeft and tapRight sprites for all frames. To fix that, move the scrubber back to frame 61, and change the positions for tapLeft and tapRight back to what they were:
+Because of the way Cocos Studio works, that will actually have changed the position of the tapLeft and tapRight sprites for all frames. 
 
+> [action]
+To fix that, move the scrubber back to frame 61, and change the positions for tapLeft and tapRight back to what they were:
+>
 tapLeft - (10%, 8.75%)
 tapRight - (90%, 8.75%)
 
+> [action]
 Move the scrubber to frame 120 and set tapLeft and tapRight to the exact same positions as in frame 61.
 
+> [action]
 In the animation dropdown, set the active animation to ready.
-
+>
 ![image](animationDropdown.png)
 
 Try playing it. We're going to make it loop it in-game, so to see how it looks like looped, click the same button you used to deactivate looping.
@@ -171,6 +195,7 @@ It should look like this:
 Coding the Transitions
 ======================
 
+> [action]
 Now that we have everything set up in Cocos Studio, **save and publish** your project to Xcode so we can add the code needed to get these changes working.
 
 ##Game state
@@ -191,6 +216,7 @@ We first want to reconsider the way we track game state. Right now we only have 
 
 We're about to modify the game so that it starts on the title screen.
 
+> [action]
 > So, in `MainScene::init()`, change the line:
 > 
 	this->gameState = GameState::Playing;
@@ -213,7 +239,10 @@ So that our initial value for `gameState` is correct.
 	    this->gameState = GameState::Title;
 	}
 	
-This will behave very similarly to `triggerPlaying()` and `triggerGameOver()`. At this point it just changes the `gameState` variable - let's add the code necessary to play our animation:
+This will behave very similarly to `triggerPlaying()` and `triggerGameOver()`. 
+
+> [action]
+At this point it just changes the `gameState` variable - let's add the code necessary to play our animation:
 
     cocostudio::timeline::ActionTimeline* titleTimeline = CSLoader::createTimeline("MainScene.csb");
     this->stopAllActions();
@@ -239,8 +268,9 @@ Run the game! You should see the title animate down from the top.
 
 Now we need a way to transition from the `Title` state to the `Ready` state. We're going to make it easy: any touch on the screen while in the `Title` state will transition us to the `Ready` state.
 
+> [action]
 In the `switch` statement in `MainScene::setupTouchHandling()`, add the following case:
-
+>
 	case GameState::Title:
 		this->triggerReady();
 	   break;
@@ -266,7 +296,7 @@ Now let's make it so we transition from the ready screen into gameplay.
 > [action]
 > 
 > Directly above `case GameState::Playing:` in the `setupTouchHandling()` `switch` statement, add the following code:
-
+>
 	case GameState::Ready:
 		this->triggerPlaying();
 		// no break here!
@@ -288,34 +318,36 @@ Try running it! The game should now correctly transition into playing.
 
 However, there is a problem - the tap buttons are still animating on the screen, distracting the player. Let's make them fade out, and let's do it in code.
 
+> [action]
 In `MainScene::triggerPlaying()` add the following code:
-
+>
     // get a reference to the top-most node
     auto scene = this->getChildByName("Scene");
-    
+>  
     // get references to the left and right tap sprite
     cocos2d::Sprite* tapLeft = scene->getChildByName<cocos2d::Sprite*>("tapLeft");
     cocos2d::Sprite* tapRight = scene->getChildByName<cocos2d::Sprite*>("tapRight");
-
+>
     // create two fade actions 
     cocos2d::FadeOut* leftFade = cocos2d::FadeOut::create(0.35f);
     cocos2d::FadeOut* rightFade = cocos2d::FadeOut::create(0.35f);
-    
+>   
     // run the fade actions
     tapLeft->runAction(leftFade);
     tapRight->runAction(rightFade);
 
 Now let's make it so that after the player loses, instead of transitioning directly back in to playing the game, let's go back to the ready state. This will give the player a chance to collect themselves.
 
+> [action]
 Inside `MainScene::setupTouchHandling()`, change this:
-
+>
 	case GameState::GameOver:
 		this->resetGameState();
 		this->triggerPlaying();
 		break;
-
+>
 to look like this:
-
+>
 	case GameState::GameOver:
 		this->resetGameState();
 		this->triggerReady();
@@ -323,6 +355,7 @@ to look like this:
 
 Now try running it. It works, but it's not quite apparent that we're even in the ready state. That's because the tap sprites are still invisible because we faded them out!
 
+> [action]
 We can fix that by modifying `triggerReady()` to make the sprites have full opacity again. See if you can figure out how to do it.
 
 > [solution]

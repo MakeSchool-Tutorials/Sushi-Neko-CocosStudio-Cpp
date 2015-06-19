@@ -10,20 +10,23 @@ In fact, if you haven't used Cocos Studio and Cocos2d-x before, you might find i
 Create a New Project
 ====================
 
-Let's start the work on our game by creating a new Cocos Studio project. Open the Cocos App:
+Let's start the work on our game by creating a new Cocos Studio project. 
 
+> [action]
+Open the Cocos App:
+>
 ![image](cocosapp.png)
-
+>
 Switch to the *Projects* tab and click new project:
-
+>
 ![image](newProject.png)
-
+>
 Create a new Cocos Project:
-
+>
 ![image](newProjectType.png)
-
+>
 Name your new project *SushiNeko*. Select the latest engine version, and set the orientation to portrait.  Make sure you select C++ as your project language. Set the Project Path to wherever you like, but remember  where you set it, so you can find it later!
-
+>
 ![image](newProjectSettings.png)
 
 Once the project is created, open
