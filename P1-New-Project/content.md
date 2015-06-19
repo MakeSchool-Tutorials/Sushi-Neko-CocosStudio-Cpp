@@ -13,6 +13,7 @@ Create a New Project
 Let's start the work on our game by creating a new Cocos Studio project. 
 
 > [action]
+> 
 Open the Cocos App:
 >
 ![image](cocosapp.png)
@@ -49,16 +50,19 @@ The default Cocos Studio project comes with one scene, *MainScene.csd*. Your emp
 Testing your setup
 ==================
 > [action]
+> 
 Let’s make sure everything was generated correctly. Click on the *Publish and Package* button in Cocos Studio:
 
 ![image](publishAndPackage.png)
 
 > [action]
+> 
 Change the Publish Type to *Publish to Xcode* and click *OK*
 
 ![image](publishSettings.png)
 
 > [action]
+> 
 Now navigate to the *proj.ios-mac* directory and open *SushiNeko.xcodeproj* to view the project in Xcode. Press the play button in Xcode to run the project on the iOS Simulator.
 
 ![image](runButton.png)

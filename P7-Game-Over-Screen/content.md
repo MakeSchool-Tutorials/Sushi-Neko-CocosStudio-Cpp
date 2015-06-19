@@ -11,12 +11,15 @@ The last thing left to do is create a game over dropdown. Like a nice rug in a r
 ##Laying it out
 
 > [action]
+> 
 In Cocos Studio, open *MainScene.csd*. 
 
 > [action]
+> 
 > First, make sure that *automatic frame recording* is off. Drag *mat.png* on to the scene. Set its *name* to mat. Set the *anchor point* to (0.5, 1.0). For now, so we can see it, set its position to (50%, 100%).
 
 > [action]
+> 
 Next, drag *gameOver.png* on to the scene. Make it a child of mat by dragging the sprite in the timeline on top of mat. Set the:
 - *anchor point* to (0.5, 1.0)
 - *position* to (50%, 90%)
@@ -42,6 +45,7 @@ For gameOverScoreLabel, set:
 - *Font File* to Game of Three.ttf
 
 > [action]
+> 
 Now drag *button.png* on to the scene. *Name* it play. Set its *position* to (50%, 8.75%).
 
 ##Drop down animation
@@ -49,6 +53,7 @@ Now drag *button.png* on to the scene. *Name* it play. Set its *position* to (50
 Now its time to set up our down down animation.
 
 > [action]
+> 
 > With *automatic frame recording* enabled, move the scrubber to frame 0. Uncheck *visibility* for both mat and play.
 > 
 > Now add a new animation called gameOver. It should start on frame 121, and end on frame 151.
@@ -72,6 +77,7 @@ Coding the Game Over Dropdown
 Thankfully, triggering the game over animation is as easy as adding some lines of code to the end of `triggerGameOver()`.
 
 > [action]
+> 
 Add the following:
 >
     // get a reference to the top-most node
@@ -97,3 +103,4 @@ Congrats! You have finished a fully polished clone of Timberman!
 <video width="100%" controls>
 	<source src="https://s3.amazonaws.com/mgwu-misc/Sushi+Neko+Cpp/finalGameOver.mov" type="video/mp4">
 </video>
+

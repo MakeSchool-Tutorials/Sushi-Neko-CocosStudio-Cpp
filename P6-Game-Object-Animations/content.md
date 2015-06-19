@@ -13,6 +13,7 @@ We'll be using a sprite frame animation to make the cat chop at the sushi tower.
 First we're going to set up a default animation. That's basically just an animation that starts and ends on frame 0. Any keyframes you set in a default animation will be the state of the object when it's first loaded.
 
 > [action]
+> 
 > Open up `Character.csd`.
 > 
 > Create a new animation named `default` that starts and ends at frame 0.
@@ -53,9 +54,11 @@ As a sushi roll is chopped by the cat, we want to have a nice animation of it fl
 ##Setting up Piece.csd
 
 > [action]
+> 
 > Open *Piece.csd*.
 
 > [action]
+> 
 > Create three new animation timelines:
 >
 <!-- Unfortunately, no markdown table support yet -->
@@ -110,6 +113,7 @@ Create a new keyframe for roll at frame 0 that sets its position to (0, 0).
 Move the scrubber to frame 1. Set another roll keyframe at *position* (0, 0). Also at frame 1, set *rotation* to 0. Now, at frame 48, set the roll's position to (800, 200) and its rotation to 120.
 
 > [action]
+> 
 Finally, click the keyframe at frame 1 and set its *animation curve* to Sine_EaseOut.
 
 ##Animating moveLeft
@@ -117,9 +121,11 @@ Finally, click the keyframe at frame 1 and set its *animation curve* to Sine_Eas
 The animation for moveLeft is the same as moveRight, but it should instead move to the left and rotate counter-clockwise.
 
 > [action]
+> 
 > Make the moveLeft animation.
 
 > [action]
+> 
 Once you're done making moveLeft, set the scrubber back to 0, before saving and publishing. The object will be created with whichever position the scrubber was last on.
 
 Triggering the Chopping In Code
@@ -127,6 +133,7 @@ Triggering the Chopping In Code
 The animations are ready to go. 
 
 > [action]
+> 
 > Save and publish to Xcode so we can start coding!
 
 ##Cat Chops
@@ -134,6 +141,7 @@ The animations are ready to go.
 To get our `Character` chopping, we'll have to add some new methods and an instance variable.
 
 > [action]
+> 
 > In *Character.h* declare three new `public` methods:
 > 	 
 	bool init() override;
@@ -149,12 +157,15 @@ The compiler will complain about not understanding what `ActionTimeline` is, so 
 	#include "cocostudio/CocoStudio.h"
 
 > [action]
+> 
 Now flip over to *Character.cpp*. We're going to load the animation timeline in *init()*.
 
 > [action]
+> 
 > Add the standard skeleton method for overriding `init()`.
 
 > [solution]
+> 
 > It should look like this:
 > 
 	bool Character::init()
@@ -219,6 +230,7 @@ Implement `onExit()` like this:
 Now we can implement `runChopAnimation()`. When `runChopAnimation()` is called, it should run the `chop` animation that is part of `timeline`. See if you can implement it yourself!
 
 > [solution]
+> 
 > Your `runChopAnimation()` should look like this:
 > 
 	void Character::runChopAnimation()
@@ -338,6 +350,7 @@ This uses another lamda expression, just like `onTouchBegan`. It makes sure that
 So now this should work nicely, and we just need to trigger it appropriately.
 
 > [action]
+> 
 > After `Piece* currentPiece = this->pieces.at(this->pieceIndex);` add:
 > 
     this->animateHitPiece(currentPiece->getObstacleSide());
