@@ -10,7 +10,7 @@ Adding Artwork
 
 > [action]
 > 
-To get started, [download our art pack](Assets.zip). Add the art pack you just downloaded to your Cocos Studio project by first unpacking the archive, then drag the folder onto the Resources Panel in Cocos Studio. Alternatively you can right click in the Resources Browser and *Import Resources...*.
+To get started, [download our art pack](https://raw.githubusercontent.com/MakeSchool-Tutorials/Sushi-Neko-CocosStudio-Cpp/master/P2-Creating-Cat-Sushi/Assets.zip). Add the art pack you just downloaded to your Cocos Studio project by first unpacking the archive, then drag the folder onto the Resources Panel in Cocos Studio. Alternatively you can right click in the Resources Browser and *Import Resources...*.
 
 ![image](resourcesAfterImport.png)
 
