@@ -24,10 +24,9 @@ You just deleted the default background image, but note that you cannot delete t
 > [action]
 > 
 In the Resources Browser in the left panel, find *HelloWorld.png* and delete it - you don't need it anymore.
-
 > 
 Check to make sure that your design resolution (in the top-left hand corner) is set to *960 x 640*. This is the resolution at which we'll design the game in Cocos Studio.
-
+>
 ![image](displayResolution.png)
 
 Create the Character

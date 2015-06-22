@@ -175,12 +175,12 @@ Also make tapLeft, tapRight and lifeBG become visible at frame 61.
 
 Let's get started with our animation. We want the tap buttons to move back and forth from left to right so they catch the player's attention.
 
-> 
+>  [action]
 Move the scrubber to frame 90. Change the position of tapLeft to (0%, 8.75%) and tapRight to (100%, 8.75%).
 
 Because of the way Cocos Studio works, that will actually have changed the position of the tapLeft and tapRight sprites for all frames. 
 
-> 
+> [action]
 To fix that, move the scrubber back to frame 61, and change the positions for tapLeft and tapRight back to what they were:
 >
 tapLeft - (10%, 8.75%)
@@ -257,7 +257,7 @@ This will behave very similarly to `triggerPlaying()` and `triggerGameOver()`.
 > [action]
 > 
 At this point it just changes the `gameState` variable - let's add the code necessary to play our animation:
-
+>
     cocostudio::timeline::ActionTimeline* titleTimeline = CSLoader::createTimeline("MainScene.csb");
     this->stopAllActions();
     this->runAction(titleTimeline);
@@ -376,7 +376,7 @@ Now try running it. It works, but it's not quite apparent that we're even in the
 > 
 We can fix that by modifying `triggerReady()` to make the sprites have full opacity again. See if you can figure out how to do it.
 
-=
+<!--block seperator-->
 
 > [solution]
 > 

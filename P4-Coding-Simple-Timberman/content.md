@@ -119,15 +119,15 @@ Xcode may ask you if you want to take a snapshot before performing the operation
 >
 Now do the same thing, except replace all instances of *HelloWorld* with *MainScene*. 
 >
-
 ![image](replaceHelloWorld.png)
 
+<!--block seperator-->
 
 > [info]
 > 
 Generally speaking, you should be very careful using replace all functionality in text editors - it's very easy to unintentionally replace something that you didn't intend to. It's a better practice to check each result individually and use the *Replace* button to replace one at a time, instead of doing all of them with *Replace All*. However, for the purposes of this tutorial, doing a *Replace All* was okay.
 
-Let's move on.
+<!--block seperator-->
 
 > [action]
 > 
@@ -260,12 +260,15 @@ This is all boilerplate code required by Cocos2d-x to read Cocos Studio objects.
 > 
 > `createNodeWithFlatBuffers` is what's called by the Cocos2d-x code to create and initialize the object with the properties set in Cocos Studio. 
 
-Time to make `Piece and `PieceReader`:
+Time to make `Piece` and `PieceReader`:
 
 > [action]
 > 
 **Follow the same steps to create the `Piece` and `PieceReader` classes.**
 
+<!--block seperator-->
+
+> [action]
 > 
 After you've done that, we have to tell Cocos2d-x where to find the reader classes.  Open *MainScene.cpp* and below these lines in `init`:
 >
@@ -405,7 +408,7 @@ Next, add the `piece` to both the `pieceNode` and our `pieces` `Vector`.
         this->pieceNode->addChild(piece);
         this->pieces.pushBack(piece);
         
-Some additional information about pointers to objects vs. objects.
+<!--block seperator-->
 
 > [info]  
 >    
@@ -459,7 +462,7 @@ We will use these `enum` values to represent what side both the `Character` and 
 > 
 > Why not just use a `std::string` instead?  It's much slower to compare two `std::string` types, and they occupy more memory.  
 
-Now it's time to use the newly created `Side` enum in `Character`:
+Now we will use the newly created `Side` enum in `Character`:
 
 > [action]
 > 
@@ -505,6 +508,8 @@ Okay, so the `Character` class has an instance variable that represents what sid
 > [action]
 > 
 Modify `setSide` to appropriately flip the character to the right side of the screen if it's set to `Right` and back to the left side if it's set to `Left`.
+
+<!--block seperator-->
 
 > [solution]
 > 
@@ -589,7 +594,7 @@ Here's what that looks like:
 	void MainScene::onEnter()
 	{
 	    Layer::onEnter();
-	    
+>	    
 	    this->setupTouchHandling();
 	}
 
@@ -688,7 +693,7 @@ See if you can do it yourself!
     Sprite* leftChopstick = roll->getChildByName<Sprite*>("leftChopstick");
     Sprite* rightChopstick = roll->getChildByName<Sprite*>("rightChopstick");
 
-Now let's set the visibility of the obstacles based on the side:
+<!--block seperator-->
 
 > [action]   
 > 
@@ -708,7 +713,7 @@ Here's what the `switch` should look like for `setObstacleSide`:
 	     	break;
 	}
 	
-Why use a `switch` statement, when we can use `if else`?
+<!--block seperator-->
 
 > [info]
 > 
@@ -728,7 +733,7 @@ Why use a `switch` statement, when we can use `if else`?
 	}
 It's a little bit more ugly, but it's actually also less performant.  Switch statements can jump straight to the correct code branch based on the value being switched on, whereas if / else statements have to evaluate through the various possible conditions until finding the correct one.
 
-=
+<!--block seperator-->
 
 > [action]
 > 
@@ -746,7 +751,6 @@ To make sure our pieces follow these rules, we'll pass in the obstacle side of t
 > [action]
 > 
 First, declare an instance variable in *MainScene.h* of type `Side` called *lastObstacleSide*. Don't forget to `#include "Constants.h"`.
-
 > 
 In `MainScene::init()`, somewhere before we create the sushi tower, initialize `lastObstacleSide` to the value `Side::Left`. Now, inside the for loop that creates the tower, add the following two lines:
 >
@@ -819,7 +823,7 @@ Move the Sushi Tower
 
 Our next goal is to get the sushi tower to move downward with each of the player's taps. Once we get that working we'll be able to add in collision detection!
 
-Early we mentioned that we want the tower to cycle between the ten pieces we have already created. 
+Earlier we mentioned that we want the tower to cycle between the ten pieces we have already created. 
 
 > [action]
 > 
@@ -989,7 +993,6 @@ Right at the top of `onTouchBegan`, add a `switch` statement on `gameState` with
 	 	case GameState::GameOver:
 	   		break;
 	}
-
 > 
 Inside the braces of the `GameState::Playing` case, paste your existing touch handling code, starting with `Vec2 touchLocation =`... and ending right before the last `return true`.  
 
