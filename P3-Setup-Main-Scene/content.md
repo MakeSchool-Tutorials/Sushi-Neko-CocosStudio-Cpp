@@ -66,7 +66,7 @@ Uncheck the *visible* box for now.
 Drag *life_bg.png* onto the scene. Name it "lifeBG". Set the *anchor point* to (0.5, 1.0) and its *position* to (50%, 98%). This will ensure it is centered and near the top of the screen on all devices.
 
 > 
-Drag *life.png* onto the scene and set it as a child of *life_bg*. Name it "lifeBar". This sprite will show the remaining time. Set its *anchor point* to (0, 0.5)  Set the *x-postion* to 17px and the *y-position* to 50%. This should center the red life bar on its background.
+Drag *life.png* onto the scene and set it as a child of *lifeBG*. Name it "lifeBar". This sprite will show the remaining time. Set its *anchor point* to (0, 0.5)  Set the *x-postion* to 17px and the *y-position* to 50%. This should center the red life bar on its background.
 
 We will be changing the *Horizontal Scale %* in code to reflect the current amount of time remaining. The anchor point will ensure the left side is always positioned near the left edge of the life_bg border. 
 
