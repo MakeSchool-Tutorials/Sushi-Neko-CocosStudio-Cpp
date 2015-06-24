@@ -70,7 +70,7 @@ Drag the blue scrubber bar over to frame 1, and click the title sprite in the ti
 
 You should see the title appear at the top of the screen, and you should also see a new keyframe created at the interesection of the scrubber and the title timeline track. The keyframe is indicated as a small black rectange in the animation editor window.
 
-![image](newKeyFrame.png)
+![image](newKeyFrameEx.png)
 
 > [action]
 > 
