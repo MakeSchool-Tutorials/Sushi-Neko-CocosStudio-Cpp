@@ -898,7 +898,7 @@ Detect Collisions and Trigger Game Over
 
 Now we're going to code two new methods, `isGameOver()` will check if the game is in a game over state, and `triggerGameOver()` will end the game.
 
-First, code `isGameOver()`. It should return a `bool` indicating whether or not the game is in a game over state - which is when the `character` is on the same said as the `obstacle` on the current piece.
+First, code `isGameOver()`. It should return a `bool` indicating whether or not the game is in a game over state - which is when the `character` is on the same side as the `obstacle` on the current piece.
 
 > [action]
 > 
