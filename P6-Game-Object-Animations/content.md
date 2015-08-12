@@ -334,10 +334,10 @@ Let's fix that.
 > 
 We can fix it by adding this line to `animateHitPiece`:
 >
-	// on the last frame of the animation, remove the piece from the scene
-	pieceTimeline->setLastFrameCallFunc([flyingPiece]() {
-		flyingPiece->removeFromParent();
-	});
+    // on the last frame of the animation, remove the piece from the scene
+    pieceTimeline->setLastFrameCallFunc([this, &flyingPiece]() {
+        this->removeChild(flyingPiece);
+    });
 
 This uses another lamda expression, just like `onTouchBegan`. It makes sure that, on the last frame of the animation, the `flyingPiece` is removed from the scene.
 
