@@ -9,7 +9,7 @@ Time to code! In this step we are going to hook up the UI we've created in Cocos
 > 
 Open your Xcode project if it isn't already. 
 
-Your Xcode project is contained inside the *proj.ios_mac* sub-directory in the directory where your Cocos Studio project lives. If you don't remember where you saved it, search for your project name *SushiNeko.xcodeproj* in Spotlight (magnifying glass at the top right of your Mac's screen).
+Your Xcode project is contained inside the *proj.ios_mac* sub-directory in the directory where your Cocos Studio project lives. If you don't remember where you saved it, search for your project name *SushiNeko.xcodeproj* in Spotlight (press ⌘-space or click the magnifying glass at the top right of your Mac's screen).
 
 First we're going to make some changes to the generated template code to make the game work on any device resolution.
 
