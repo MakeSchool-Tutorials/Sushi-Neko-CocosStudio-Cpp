@@ -7,8 +7,7 @@ slug: setup-main-scene
 > 
 Open *MainScene.csd*. 
 
-Add a Background
-================
+## Add a Background
 
 > [action]
 > 
@@ -16,8 +15,7 @@ Now add the background image by dragging *background.png* onto the scene. Set it
 
 ![image](setUpBackground.png)
 
-Add the Character and Sushi Stack
-=================================
+## Add the Character and Sushi Stack
 
 > [action]
 > 
@@ -38,8 +36,7 @@ Your scene and timeline should now look like this:
 
 To complete the MainScene we still need to add a score label, restart button, and timer bar.
 
-Add Some UI
-===========
+## Add Some UI
 
 > [action]
 > 
@@ -47,7 +44,7 @@ Drag a *Label* (not *BitmapLabel*) from the *Widgets* pane onto the scene. Name 
 
 ![image](afterScoreLabel.png)
 
-##Add a Restart Button
+#### Add a Restart Button
 
 > [action]
 > 
@@ -59,7 +56,7 @@ Drag a *Button* from the *Widgets* pane on the left side of Cocos Studio onto th
 > 
 Uncheck the *visible* box for now.
 
-##Add a Timer Bar
+#### Add a Timer Bar
 
 > [action]
 > 
@@ -80,8 +77,7 @@ Your scene and timeline should now look like this:
 
 Congratulations! You have finished setting up everything in Cocos Studio for our basic gameplay demo. We'll come back to Cocos Studio to polish up things after we get the code working.
 
-Copy Resources
-=======================
+## Copy Resources
 
 > [action]
 > 
