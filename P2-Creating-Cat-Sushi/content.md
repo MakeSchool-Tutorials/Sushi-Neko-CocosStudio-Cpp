@@ -5,8 +5,7 @@ slug: creating-cat-sushi
 
 If you haven't used Cocos Studio before, you should first read up on the interface [here](https://www.makeschool.com/tutorials/learn-cocos-studio-and-c-by-building-the-game-of-life/cocos-studio-user-interface).
 
-Adding Artwork
-==============
+## Adding Artwork
 
 > [action]
 > 
@@ -29,8 +28,7 @@ Check to make sure that your design resolution (in the top-left hand corner) is 
 >
 ![image](displayResolution.png)
 
-Create the Character
-====================
+## Create the Character
 
 > [action]
 > 
@@ -57,8 +55,7 @@ After we're done making the core gameplay, we'll come back to this file to creat
 
 Now it's time to create the sushi pieces that will get chopped, and the associated obstacles for the player to dodge.
 
-Create an Obstacle Piece
-========================
+## Create an Obstacle Piece
 
 > [action]
 > 
