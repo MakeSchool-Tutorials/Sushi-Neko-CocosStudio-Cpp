@@ -7,8 +7,7 @@ If you haven't used Cocos Studio before, you will need to install it.  For more 
 
 In fact, if you haven't used Cocos Studio and Cocos2d-x before, you might find it easier to start with the [Game of Life tutorial](https://www.makeschool.com/tutorials/learn-cocos-studio-and-c-by-building-the-game-of-life/what-game-of-life) instead.
 
-Create a New Project
-====================
+## Create a New Project
 
 Let's start the work on our game by creating a new Cocos Studio project. 
 
@@ -47,8 +46,8 @@ The default Cocos Studio project comes with one scene, *MainScene.csd*. Your emp
 
 ![image](blankNewProject.png)
 
-Testing your setup
-==================
+## Testing your setup
+
 > [action]
 > 
 Let’s make sure everything was generated correctly. Click on the *Publish and Package* button in Cocos Studio:
