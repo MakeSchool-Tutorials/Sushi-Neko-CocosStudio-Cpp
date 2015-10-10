@@ -3,11 +3,12 @@ title: "Finishing up the game"
 slug: game-over-screen
 ---     
 
-## Designing the Game Over Dropdown
+Designing the Game Over Dropdown
+======================
 
 The last thing left to do is create a game over dropdown. Like a nice rug in a room, this will help tie the whole game together.
 
-#### Laying it out
+## Laying it out
 
 > [action]
 > 
@@ -41,7 +42,7 @@ For gameOverScoreLabel, set:
 > 
 Now drag *button.png* on to the scene. *Name* it play. Set its *position* to (50%, 8.75%).
 
-#### Drop down animation
+## Drop down animation
 
 Now its time to set up our down down animation.
 
@@ -63,9 +64,10 @@ Try playing it! We have a nice animation.
 > 
 Don't forget to **save and publish** before moving on.
 
-## Coding the Game Over Dropdown
+Coding the Game Over Dropdown
+======================
 
-#### Triggering the dropdown
+## Triggering the dropdown
 Thankfully, triggering the game over animation is as easy as adding some lines of code to the end of `triggerGameOver()`.
 
 > [action]
