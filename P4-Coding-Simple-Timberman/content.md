@@ -13,7 +13,8 @@ Your Xcode project is contained inside the *proj.ios_mac* sub-directory in the d
 
 First we're going to make some changes to the generated template code to make the game work on any device resolution.
 
-## Modify AppDelegate.cpp
+Modify AppDelegate.cpp
+======================
 
 First we will modify our AppDelegate class.  The AppDelegate is the class that handles interfacing with the operating system.  For example, `void AppDelegate::applicationDidEnterBackground() ` is called every time your game is backgrounded.
 
@@ -66,7 +67,8 @@ Add the following:
 
 This code tells Cocos2d-x to use different assets depending on the pixel height of the display.  For example, if the height is between 1137 and 2047 pixels, it will load images from the *resources-3x* directory.
 
-## Modify HelloWorldScene.cpp
+Modify HelloWorldScene.cpp
+======================
 
 Because of a bug in Cocos2d-x (specifically the code that reads our Cocos Studio files), we have to add a bit of code to ensure that the positions of our objects that we created in Cocos Studio are correctly repositioned for various resolutions.
 
@@ -88,7 +90,8 @@ It should look something like this:
 
 ![image](firstRun.png)
 
-## Rename HelloWorldScene
+Rename HelloWorldScene
+======================
 
 Unfortunately, the default Cocos Studio new project template gives the main scene the name `HelloWorldScene`. Because it's a good practice to give classes names that describe their function, we're going to rename `HelloWorldScene` to `MainScene`. Also that way the scene in Cocos Studio, *MainScene.csd*, matches the scene in code. This is a good opportunity to learn about Xcode's project search feature.
 
@@ -134,7 +137,8 @@ Finally, rename *HelloWorldScene.h* and *HelloWorldScene.cpp* to *MainScene.h* a
 
 You will likely often find yourself using Xcode's Find feature - it's a very fast way to look for a piece of code.
 
-## Set Up Custom Classes in Cocos Studio
+Set Up Custom Classes in Cocos Studio
+======================
 
 Now let's go back to our Cocos Studio project. We're going to create *Custom Class* linkages for the Character and Piece objects we made.  This will allow us to define custom behaviors for those objects in code.  We didn't do this step earlier because setting a custom class in Cocos Studio will cause the game to crash when its run if the custom classes are not also defined in code.
 
@@ -154,7 +158,8 @@ Now do the exact same steps for *Piece.csd* - set its custom class to Piece.
 **Save and publish the Cocos Studio project before moving on!**
 
 
-## Create Some Classes
+Create Some Classes
+======================
 
 Now we'll create the code for the custom classes we just set up in Cocos Studio. We'll need four new classes for our game right now:
 
@@ -291,7 +296,8 @@ To do that, add the following to the other `#includes` commands:
 
 Try running again.  It might look the same, but as long as it doesn't crash, that means that our `Character` and `Piece` custom classes are working!
 
-## Building the Sushi Tower
+Building the Sushi Tower
+======================
 
 We'll be building the game's code piece by piece. Our plan is to:
 
@@ -422,7 +428,8 @@ Your game should now look like this when you run it:
 
 Now let's move on to adding touch handling.
 
-## Add Touch Handling
+Add Touch Handling
+======================
 
 Before adding touch handling, we first need a method we can call to move the `Character` to the right side of the screen and back.
 
@@ -636,7 +643,8 @@ You should now be able to move the character from one side to another and back:
 	<source src="https://s3.amazonaws.com/mgwu-misc/Sushi+Neko+Cpp/touchHandling.mov" type="video/mp4">
 </video>
 
-## Randomize Each Obstacle's Side
+Randomize Each Obstacle's Side
+======================
 
 Let's set up the `Piece` class. Just like how we created the `side` property in `Character`, with `setSide` and `getSide` methods, we're going to do the same thing in `Piece`, except call it `setObstacleSide` and `getObstacleSide`.  
 
@@ -810,7 +818,8 @@ Run the game. It should have randomized obstacles now!
 
 ![image](afterRandomization.png)
 
-## Move the Sushi Tower
+Move the Sushi Tower
+======================
 
 Our next goal is to get the sushi tower to move downward with each of the player's taps. Once we get that working we'll be able to add in collision detection!
 
@@ -884,7 +893,8 @@ Launch the game and play around a bit. You should have an infinitely looping tow
 	<source src="https://s3.amazonaws.com/mgwu-misc/Sushi+Neko+Cpp/towerStep.mov" type="video/mp4">
 </video>
 
-## Detect Collisions and Trigger Game Over
+Detect Collisions and Trigger Game Over
+======================
 
 Now we're going to code two new methods, `isGameOver()` will check if the game is in a game over state, and `triggerGameOver()` will end the game.
 
@@ -1091,7 +1101,8 @@ Try running it!  Now when the cat collides with an obstacle, the next touch will
 
 The core gameplay is pretty close to completion. The only thing left is the timer and score!
 
-## Update the Score
+Update the Score
+======================
 
 The score label has been sitting in the middle of the screen this whole time, but we haven't yet began updating it.  Let's do that now.
 
@@ -1147,7 +1158,8 @@ The last thing to do is add a call to `setScore` in the `GameState::Playing` `ca
 
 Run it! You should now see the score incrementing.
 
-## Get the Timer Working
+Get the Timer Working
+======================
 
 In Timberman there is a timer constantly counting down. Every successful move adds a little bit of time, but if you don't play fast enough, you run out of time and it's game over.
 
