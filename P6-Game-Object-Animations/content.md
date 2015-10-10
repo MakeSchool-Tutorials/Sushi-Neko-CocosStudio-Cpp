@@ -3,11 +3,12 @@ title: "Getting fancy with more animations"
 slug: game-object-animations
 ---     
 
-## Animating the Cat
+Animating the Cat
+======================
 
 We'll be using a sprite frame animation to make the cat chop at the sushi tower. Sprite frame animations are not like keyframe animations, in which you can change an object's properties (like position or rotation) over time. Instead, sprite frame animations change the image that's displayed, usually every frame.
 
-#### Setting up the Timelines
+## Setting up the Timelines
 
 First we're going to set up a default animation. That's basically just an animation that starts and ends on frame 0. Any keyframes you set in a default animation will be the state of the object when it's first loaded.
 
@@ -42,11 +43,12 @@ Find the fps box:
 >
 and slow it down by changing it from 60 fps to 30 fps.
 
-## Animating the Sushi Rolls
+Animating the Sushi Rolls
+======================
 
 As a sushi roll is chopped by the cat, we want to have a nice animation of it flying off the screen.
 
-#### Setting up Piece.csd
+## Setting up Piece.csd
 
 > [action]
 > 
@@ -99,7 +101,7 @@ Create a new keyframe for roll at frame 0 that sets its position to (0, 0).
 
 > Don't forget to activate *automatic frame recording*!
 
-#### Animating moveRight
+## Animating moveRight
 
 > [action]
 > 
@@ -108,7 +110,7 @@ Move the scrubber to frame 1. Set another roll keyframe at *position* (0, 0). Al
 > 
 Finally, click the keyframe at frame 1 and set its *animation curve* to Sine_EaseOut.
 
-#### Animating moveLeft
+## Animating moveLeft
 
 The animation for moveLeft is the same as moveRight, but it should instead move to the left and rotate counter-clockwise.
 
@@ -119,7 +121,8 @@ The animation for moveLeft is the same as moveRight, but it should instead move 
 > 
 Once you're done making moveLeft, set the scrubber back to 0, before saving and publishing. The object will be created with whichever position the scrubber was last on.
 
-## Triggering the Chopping In Code
+Triggering the Chopping In Code
+======================
 
 The animations are ready to go. 
 
@@ -127,7 +130,7 @@ The animations are ready to go.
 > 
 > Save and publish to Xcode so we can start coding!
 
-#### Cat Chops
+## Cat Chops
 
 To get our `Character` chopping, we'll have to add some new methods and an instance variable.
 
@@ -250,7 +253,8 @@ This ensures that `runChopAnimation()` is only called if a valid move has been m
 	<source src="https://s3.amazonaws.com/mgwu-misc/Sushi+Neko+Cpp/chopAnimation.mov" type="video/mp4">
 </video>
 
-## Trigger the Flying Sushi
+Trigger the Flying Sushi
+======================
 
 Let's create a method to call whenever a sushi piece is successful hit. This method will be responsible for creating a dummy piece that we'll use to animate in the direction it was hit. Remember, the real piece is actually swapped to the top of the tower!
 
@@ -353,7 +357,8 @@ Try running it! You should see flying sushi everywhere!
 </video>
 
 
-## Animate the Tower Down
+Animate the Tower Down
+======================
 
 It looks good, but it would look better if the tower animated down after every chop, instead of instantly moving down. Thankfully, this is an easy fix.
 
