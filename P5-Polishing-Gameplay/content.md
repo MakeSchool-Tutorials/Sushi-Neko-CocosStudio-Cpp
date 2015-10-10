@@ -3,7 +3,8 @@ title: "Adding a title screen"
 slug: title-screen
 ---     
 
-## Polishing the Gameplay
+Polishing the Gameplay
+======================
 
 Now it's time to start turning this into a fully polished game. In this section we will:
 
@@ -11,9 +12,10 @@ Now it's time to start turning this into a fully polished game. In this section 
 2. Add a ready to play animation
 3. Add tap indicators
 
-## Adding a Title Screen
+Adding a Title Screen
+======================
 
-#### Adding a title
+## Adding a title
 
 Now let's build a title for our game. 
 
@@ -31,7 +33,7 @@ Set its:
 
 You'll notice that not only did we set the title image way off the top of the screen, we also made it invisible. That's because we're about to add an animation that will drop it into view!
 
-#### Animating the title
+## Animating the title
 
 First, let's set up our animation timeline. 
 
@@ -120,11 +122,12 @@ Your final title animation should look like this:
 </video>
 
 
-## Add Ready Animations
+Add Ready Animations
+======================
 
 After the title screen, we're going to have another game state - the *ready* state. In this state, the title sprite disappears and the life bar appears, which will provide a smooth transition into the playing state. It will also act as a sort of simple tutorial - we will add animated tap sprites that teach the user how to play.
 
-#### Adding the tap sprites
+## Adding the tap sprites
 
 We need to get our tap sprites on the screen before we can animate them.
 
@@ -151,7 +154,7 @@ If you run the *title* animation again, you shall see that now the tap sprites a
 > 
 **Check** *Automatic frame recording* again, and move the scrubber to frame 1. Toggle the *visiblity* of both tapLeft and tapRight to off, so that they are not visible during the title animation.
 
-#### Creating a New Animation
+## Creating a New Animation
 
 > [action]
 > 
@@ -161,7 +164,7 @@ If you run the *title* animation again, you shall see that now the tap sprites a
 > - *Start Frame*: 61
 > - *End Frame*: 120
 
-#### Animating the Indicators
+## Animating the Indicators
 
 > [action]
 > 
@@ -199,13 +202,14 @@ It should look like this:
 	<source src="https://s3.amazonaws.com/mgwu-misc/Sushi+Neko+Cpp/readyAnimation.mov" type="video/mp4">
 </video>
 
-## Coding the Transitions
+Coding the Transitions
+======================
 
 > [action]
 > 
 Now that we have everything set up in Cocos Studio, **save and publish** your project to Xcode so we can add the code needed to get these changes working.
 
-#### Game state
+## Game state
 
 We first want to reconsider the way we track game state. Right now we only have two states: `Playing` and `GameOver`. With the two new animations we just added, we'll probably want a few more:
 
@@ -237,7 +241,7 @@ We're about to modify the game so that it starts on the title screen.
 
 So that our initial value for `gameState` is correct.
 
-#### Run the Title Animation
+## Run the Title Animation
 
 > [action]
 > 
@@ -275,7 +279,7 @@ We want the title animation to run once, when `MainScene` is first loaded and di
 
 Run the game! You should see the title animate down from the top.
   
-#### Transition to Ready
+## Transition to Ready
 
 Now we need a way to transition from the `Title` state to the `Ready` state. We're going to make it easy: any touch on the screen while in the `Title` state will transition us to the `Ready` state.
 
@@ -299,7 +303,7 @@ Now when you tap on the title screen, it should transition to the ready screen.
 	<source src="https://s3.amazonaws.com/mgwu-misc/Sushi+Neko+Cpp/readyState.mov" type="video/mp4">
 </video>
 
-#### Tap to Play
+## Tap to Play
 
 Now let's make it so we transition from the ready screen into gameplay.
 
